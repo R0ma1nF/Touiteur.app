@@ -1,0 +1,12 @@
+{
+  "name": "iutnc/touiteur",
+  "description": "Projet de Touiteur",
+  "autoload": {
+    "psr-4": {
+      "iutnc\\touiteur\\": "src/classes"
+    }
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
