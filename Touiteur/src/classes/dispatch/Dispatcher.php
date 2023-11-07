@@ -79,8 +79,7 @@ class Dispatcher
             echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
             echo '</form>';
         }
-        //test de la notation du touite
-
+        
         echo '</div>'; // Fermez la div du bandeau supérieur
         echo '</header>';
 

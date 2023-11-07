@@ -12,11 +12,23 @@ class NoteTouite
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
         $stmt = $db->prepare("INSERT INTO notetouite (id_utilisateur, id_touite, note) VALUES (?, ?, 1)");
-        if ($stmt->execute([$userID, $touiteID])) {
-            // L'enregistrement a réussi
+        //verifier si l'utilisateur a deja like le touite
+        $stmt2 = $db->prepare("SELECT COUNT(*) FROM notetouite WHERE id_utilisateur = ? AND id_touite = ? and note = 1");
+        $stmt2->execute([$userID, $touiteID]);
+        $result = $stmt2->fetch();
+        if ($result > 0) {
+            //si l'utilisateur a deja like le touite, on supprime son like
+            $stmt3 = $db->prepare("DELETE FROM notetouite WHERE id_utilisateur = ? AND id_touite = ?");
+            $stmt3->execute([$userID, $touiteID]);
             return true;
-        } else {
-            throw new AuthException("L'enregistrement a échoué.");
+        }else {
+
+            if ($stmt->execute([$userID, $touiteID])) {
+                // L'enregistrement a réussi
+                return true;
+            } else {
+                throw new AuthException("L'enregistrement a échoué.");
+            }
         }
     }
 
@@ -25,11 +37,22 @@ class NoteTouite
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
         $stmt = $db->prepare("INSERT INTO notetouite (id_utilisateur, id_touite, note) VALUES (?, ?, -1)");
-        if ($stmt->execute([$userID, $touiteID])) {
-            // L'enregistrement a réussi
+        //verifier si l'utilisateur a deja dislike le touite
+        $stmt2 = $db->prepare("SELECT COUNT(*) FROM notetouite WHERE id_utilisateur = ? AND id_touite = ? and note = -1");
+        $stmt2->execute([$userID, $touiteID]);
+        $result = $stmt2->fetch();
+        if ($result > 0) {
+            //si l'utilisateur a deja dislike le touite, on supprime son dislike
+            $stmt3 = $db->prepare("DELETE FROM notetouite WHERE id_utilisateur = ? AND id_touite = ?");
+            $stmt3->execute([$userID, $touiteID]);
             return true;
-        } else {
-            throw new AuthException("L'enregistrement a échoué.");
+        }else {
+            if ($stmt->execute([$userID, $touiteID])) {
+                // L'enregistrement a réussi
+                return true;
+            } else {
+                throw new AuthException("L'enregistrement a échoué.");
+            }
         }
     }
 
