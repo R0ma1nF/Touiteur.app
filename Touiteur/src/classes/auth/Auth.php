@@ -3,6 +3,7 @@ namespace iutnc\touiteur\auth;
 
 use iutnc\touiteur\exception\AuthException;
 use PDO;
+use PDOException;
 
 class Auth
 {
@@ -56,7 +57,7 @@ class Auth
      */
     public static function authenticate(string $email, string $password, $db): bool
     {
-        $stmt = $db->prepare("SELECT id, email, passwd, role FROM user WHERE email = ?");
+        $stmt = $db->prepare("SELECT id_utilisateur, email, passwd, role FROM user WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -68,7 +69,7 @@ class Auth
 
             // Stocke l'utilisateur en session
             $_SESSION['user'] = [
-                'id' => $user['id'],
+                'id' => $user['id_utilisateur'],
                 'email' => $user['email'],
                 'role' => $user['role']
             ];
@@ -77,6 +78,22 @@ class Auth
         }
 
         return false;
+    }
+
+    public static function touite(string $contenu, $db) : bool
+    {
+            $DatePublication = date('Y-m-d H:i:s');
+            $stmt = $db->prepare("INSERT INTO touite (contenu, DatePublication) VALUES (?, ?)");
+            if ($stmt->execute([$contenu, $DatePublication])) {
+                $query = "INSERT INTO listetouiteutilisateur (id_utilisateur, ID_Touite) VALUES (?, ?)";
+                $stmt = $db->prepare($query);
+                $userID = $_SESSION["user"]["id"];
+                $stmt->execute([$userID, $db->lastInsertId()]);
+                // L'enregistrement a réussi
+                return true;
+            } else {
+                throw new AuthException("L'enregistrement a échoué.");
+            }
     }
 
     public static function canAccessPlaylist(int $playlistId, $db): bool

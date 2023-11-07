@@ -43,14 +43,18 @@ class SignInAction extends Action
 
                 if ($isAuthenticated) {
                     $user = new User();
-                    return 'Authentification réussie.'.'<br>'. 'Bienvenue ' .  $userEmail . ' ! ' .'<br>'. 'voici vos playlists :'.'<br>'  . $user->getPlaylists($db, $userEmail) . '<br>' ;
+                    $message = 'Authentification réussie.'.'<br>'. 'Bienvenue ' .  $userEmail . ' ! ' .'<br>';
+                    $message .= '<form method="GET" action="index.php">';
+                    $message .= '<input type="hidden" name="action" value="Touite">';
+                    $message .= '<button type="submit">' . "Créer un touite" . '</button>';
+
                 } else {
                     $message = 'Authentification échouée. Vérifiez votre email et votre mot de passe.';
                     $message .= '<br>';
                     $message .= '<a href="index.php?action=signin">Retour à la page de connexion</a>';
 
-                    return $message;
                 }
+                return $message;
             } catch (AuthException $e) {
 
                 return 'Authentification échouée : ' . $e->getMessage();
