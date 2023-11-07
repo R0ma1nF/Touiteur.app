@@ -30,19 +30,24 @@ class DefaultAction extends Action
      */
     public function listeTouite($db)
     {
-        $stmt = $db->prepare("SELECT id_touite, contenu, datePublication FROM touite ORDER BY datePublication DESC");
+        $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom
+                        FROM touite t
+                        JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
+                        JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
+                        ORDER BY t.datePublication DESC");
         $stmt->execute();
         $res = '';
         while ($data = $stmt->fetch()) {
             $touiteID = $data['id_touite'];
-
+            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
+            $res .= $data['prénom'] . ' ' . $data['nom'] ;
             // Boutons Like et Dislike spécifiques au touite actuel
             $res .= '<p>' . $data['contenu'] . '</p>' . $data['datePublication'] . '<br>';
             $res .= '<form method="POST" action="?action=Default">
-            <input type="hidden" name="touiteID" value="' . $touiteID . '">
-            <button type="submit" name="likeTouite">Like</button>
-            <button type="submit" name="dislikeTouite">Dislike</button>
-        </form>';
+        <input type="hidden" name="touiteID" value="' . $touiteID . '">
+        <button type="submit" name="likeTouite">Like</button>
+        <button type="submit" name="dislikeTouite">Dislike</button>
+    </form>';
 
             // Affiche la note actuelle du touite
             $note = NoteTouite::getNoteTouite($touiteID);
@@ -61,6 +66,7 @@ class DefaultAction extends Action
 
         return $res;
     }
+
 
 
     /**

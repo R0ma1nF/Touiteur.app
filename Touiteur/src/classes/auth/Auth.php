@@ -6,7 +6,7 @@ use PDO;
 
 class Auth
 {
-    public static function register(string $email, string $password, $db): void
+    public static function register(string $nom, string $prenom, string $email, string $password, $db): void
     {
         // Vérifier la longueur du mot de passe
         if (strlen($password) < 10) {
@@ -37,8 +37,8 @@ class Auth
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT, $options);
 
                 // Insérer le nouvel utilisateur dans la base de données avec le rôle 1 (ou votre rôle par défaut)
-                $stmt = $db->prepare("INSERT INTO User (email, passwd, role) VALUES (?, ?, 1)");
-                if ($stmt->execute([$email, $hashedPassword])) {
+                $stmt = $db->prepare("INSERT INTO User (nom, prénom, email, passwd, role) VALUES (?, ?, ?, ?, 1)");
+                if ($stmt->execute([$nom, $prenom, $email, $hashedPassword])) {
                     // L'enregistrement a réussi
                     return;
                 } else {

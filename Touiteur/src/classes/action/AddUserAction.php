@@ -27,6 +27,10 @@ class AddUserAction extends Action {
   {
         return <<<HTML
     <form method="POST" >
+        <label for="name">Nom:</label>
+        <input type="text" name="name" id="name" required><br>
+        <label for="firstname">Prénom:</label>
+        <input type="text" name="firstname" id="firstname" required><br>
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" required><br>
         <label for="password">Mot de passe:</label>
@@ -39,6 +43,8 @@ HTML;
     }
     private function processRegistration(): string
     {
+        $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+        $firstname = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
         $password_confirm = filter_input(INPUT_POST, 'password_confirm', FILTER_SANITIZE_STRING);
@@ -52,7 +58,7 @@ HTML;
         }else {
             $auth = new Auth();
             try {
-                $auth->register($email, $password, $db);
+                $auth->register($name, $firstname, $email, $password, $db);
                 return "L'utilisateur $email a été ajouté avec succès.";
             } catch (AuthException $e) {
                 return "L'utilisateur $email n'a pas pu être ajouté : " . $e->getMessage();
