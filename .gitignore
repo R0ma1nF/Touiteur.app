@@ -1,5 +1,5 @@
 # Ignorer le répertoire vendor
-/vendor/
+vendor/
 
 # Ignorer le répertoire .idea
 .idea/
