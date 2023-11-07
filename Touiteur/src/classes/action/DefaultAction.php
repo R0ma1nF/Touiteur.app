@@ -42,7 +42,10 @@ class DefaultAction extends Action
             //affiche le nom et le prénom de l'utilisateur qui a publié le touite
             $res .= $data['prénom'] . ' ' . $data['nom'] ;
             // Boutons Like et Dislike spécifiques au touite actuel
-            $res .= '<p>' . $data['contenu'] . '</p>' . $data['datePublication'] . '<br>';
+            $contenu = $data['contenu'];
+            $datePublication = $data['datePublication'];
+
+            $res .= '<a href="src/Touite/TouiteDetailsAction.php"><p>' . $contenu . '</p>' . $datePublication . '</a><br>';
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>

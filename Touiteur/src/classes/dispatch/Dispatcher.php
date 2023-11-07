@@ -29,7 +29,8 @@ class Dispatcher
             'Connexion' => SignInAction::class,
             'Accueil' => DefaultAction::class,
             'Deconnexion' => DisconnectAction::class,
-            'PublierTouit' => TouiteAction::class,
+            'Publier Touit' => TouiteAction::class,
+
 
 
             // Add other actions as needed
