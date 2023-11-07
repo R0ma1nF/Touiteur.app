@@ -1,0 +1,8 @@
+# Ignorer le répertoire vendor
+/vendor/
+
+# Ignorer le répertoire .idea
+.idea/
+
+# Ignorer tous les fichiers avec l'extension .ini
+*.ini
