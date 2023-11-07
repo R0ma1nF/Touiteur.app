@@ -79,30 +79,6 @@ class Auth
         return false;
     }
 
-    public static function canAccessPlaylist(int $playlistId, $db): bool
-    {
-        if (isset($_SESSION['user'])) {
-            $user = $_SESSION['user'];
-
-            // Vérifier si l'utilisateur a le rôle ADMIN
-            if ($user['role'] == 100) {
-                return true;
-            }
-
-            // Vérifier si la playlist appartient à l'utilisateur
-            $stmt = $db->prepare("SELECT COUNT(*) FROM Playlist p INNER JOIN user2playlist u2p ON p.id = u2p.id_pl WHERE p.id = ? AND u2p.id_user = ?");
-            $stmt->execute([$playlistId, $user['id']]);
-            $count = $stmt->fetchColumn();
-
-            if ($count > 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
 
 }
 ?>

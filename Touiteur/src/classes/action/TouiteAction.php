@@ -6,6 +6,7 @@ use iutnc\touiteur\auth\Auth;
 use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\db\User;
 use iutnc\touiteur\exception\AuthException;
+use iutnc\touiteur\Touite\PublierTouite;
 
 class TouiteAction extends Action
 {
@@ -39,9 +40,9 @@ class TouiteAction extends Action
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();;
 
-        $auth = new Auth();
+        $PublierTouite = new PublierTouite();
         try {
-            $auth->touite($contenu, $db);
+            $PublierTouite->touite($contenu, $db);
             return "Le touite $contenu a été ajouté avec succès.";
         } catch (AuthException $e) {
             return "Le touite $contenu n'a pas pu être ajouté : " . $e->getMessage();
