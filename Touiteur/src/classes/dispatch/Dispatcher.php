@@ -4,11 +4,11 @@
 namespace iutnc\touiteur\dispatch;
 
 
+use iutnc\touiteur\action\ActionTouite;
 use iutnc\touiteur\action\AddUserAction;
 use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\DisconnectAction;
 use iutnc\touiteur\action\SignInAction;
-use iutnc\touiteur\action\TouiteAction;
 
 class Dispatcher
 {
@@ -26,7 +26,7 @@ class Dispatcher
             'Connexion' => SignInAction::class,
             'Accueil' => DefaultAction::class,
             'Deconnexion' => DisconnectAction::class,
-            'Touite' => TouiteAction::class,
+            'PublierTouit' => ActionTouite::class,
 
             // Add other actions as needed
         ];
