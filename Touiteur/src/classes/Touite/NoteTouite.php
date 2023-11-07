@@ -1,46 +1,46 @@
 <?php
+//classe permettant de noter un touite
 namespace iutnc\touiteur\Touite;
 use iutnc\touiteur\db\ConnectionFactory as ConnectionFactory;
-class NoteTouite {
-    private $db;
+use iutnc\touiteur\exception\AuthException;
 
-    public function __construct() {
-        // Initialisez la connexion à la base de données en utilisant ConnexionFactory ou votre propre méthode de connexion
-        $this->db = ConnectionFactory::setConfig('db.config.ini');
-        $this->db = ConnectionFactory::makeConnection();
-    }
-
-    public function likeTouite($userID, $touiteID) {
-        if (!$this->hasUserRatedTouite($userID, $touiteID)) {
-            $query = "INSERT INTO NoteTouite (ID_Touite, ID_Utilisateur, Note) VALUES (?, ?, +1)";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$touiteID, $userID]);
-        }else{
-            $query = "UPDATE NoteTouite SET Note = +1 WHERE ID_Touite = ? AND ID_Utilisateur = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$touiteID, $userID]);
+class NoteTouite
+{
+    //structure de la table notetouite : id_note, id_utilisateur, id_touite, note
+    public static function likeTouite(int $userID, int $touiteID): bool
+    {
+        $db = ConnectionFactory::setConfig('db.config.ini');
+        $db = ConnectionFactory::makeConnection();
+        $stmt = $db->prepare("INSERT INTO notetouite (id_utilisateur, id_touite, note) VALUES (?, ?, 1)");
+        if ($stmt->execute([$userID, $touiteID])) {
+            // L'enregistrement a réussi
+            return true;
+        } else {
+            throw new AuthException("L'enregistrement a échoué.");
         }
     }
 
-    public function dislikeTouite($userID, $touiteID) {
-        if (!$this->hasUserRatedTouite($userID, $touiteID)) {
-            $query = "INSERT INTO NoteTouite (ID_Touite, ID_Utilisateur, Note) VALUES (?, ?, -1)";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$touiteID, $userID]);
-        }else{
-            $query = "UPDATE NoteTouite SET Note = -1 WHERE ID_Touite = ? AND ID_Utilisateur = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$touiteID, $userID]);
+    public static function dislikeTouite(int $userID, int $touiteID): bool
+    {
+        $db = ConnectionFactory::setConfig('db.config.ini');
+        $db = ConnectionFactory::makeConnection();
+        $stmt = $db->prepare("INSERT INTO notetouite (id_utilisateur, id_touite, note) VALUES (?, ?, -1)");
+        if ($stmt->execute([$userID, $touiteID])) {
+            // L'enregistrement a réussi
+            return true;
+        } else {
+            throw new AuthException("L'enregistrement a échoué.");
         }
     }
 
-    public function hasUserRatedTouite($userID, $touiteID) {
-        $query = "SELECT COUNT(*) FROM NoteTouite WHERE ID_Touite = ? AND ID_Utilisateur = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$touiteID, $userID]);
-        $count = $stmt->fetchColumn();
-        return $count > 0;
+    public static function getNoteTouite(int $touiteID): int
+    {
+        $db = ConnectionFactory::setConfig('db.config.ini');
+        $db = ConnectionFactory::makeConnection();
+        $stmt = $db->prepare("SELECT SUM(note) FROM notetouite WHERE id_touite = ?");
+        $stmt->execute([$touiteID]);
+        $note = $stmt->fetchColumn();
+        return $note;
     }
+
 }
-
-?>

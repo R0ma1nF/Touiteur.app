@@ -10,6 +10,8 @@ use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\DisconnectAction;
 use iutnc\touiteur\action\SignInAction;
 use iutnc\touiteur\action\TouiteAction;
+use iutnc\touiteur\exception\AuthException;
+use iutnc\touiteur\Touite\NoteTouite;
 
 class Dispatcher
 {
@@ -51,6 +53,9 @@ class Dispatcher
         $this->renderPage($pageContent);
     }
 
+    /**
+     * @throws AuthException
+     */
     public function renderPage(string $html): void
     {
         echo '<!DOCTYPE html>';
@@ -74,6 +79,7 @@ class Dispatcher
             echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
             echo '</form>';
         }
+        //test de la notation du touite
 
         echo '</div>'; // Fermez la div du bandeau supérieur
         echo '</header>';
