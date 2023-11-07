@@ -30,7 +30,7 @@ class Dispatcher
             'Accueil' => DefaultAction::class,
             'Deconnexion' => DisconnectAction::class,
             'PublierTouit' => TouiteAction::class,
-            'testPublierTouiteetnoter' => ActionTouite::class
+
 
             // Add other actions as needed
         ];
