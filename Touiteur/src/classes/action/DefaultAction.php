@@ -38,32 +38,35 @@ class DefaultAction extends Action
             return $liste;
         } else {
 
-            $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom
+            $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom, u.id_utilisateur
                         FROM touite t
                         JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
                         JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
                         ORDER BY t.datePublication DESC");
-            $stmt->execute();
-            $res = '';
-            while ($data = $stmt->fetch()) {
-                $touiteID = $data['id_touite'];
-                //affiche le nom et le prénom de l'utilisateur qui a publié le touite
-                $res .= $data['prénom'] . ' ' . $data['nom'];
-                // Boutons Like et Dislike spécifiques au touite actuel
-                $contenu = $this->transformTagsToLinks($data['contenu']);
-                $datePublication = $data['datePublication'];
+        $stmt->execute();
+        $res = '';
+        while ($data = $stmt->fetch()) {
+            $touiteID = $data['id_touite'];
+            $userId = $data["id_utilisateur"];
+            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
+            $prenom = $data['prénom'];
+            $nom = $data['nom'];
+            // Boutons Like et Dislike spécifiques au touite actuel
+            $contenu = $this->transformTagsToLinks($data['contenu']);
+            $datePublication = $data['datePublication'];
 
-                $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
-                $res .= '<form method="POST" action="?action=Default">
+            $res .=  '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
+            $res .=  '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication .  '</div>' . '</a><br>';
+            $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
         <button type="submit" name="dislikeTouite">Dislike</button>
     </form>';
 
-                // Affiche la note actuelle du touite
-                $note = NoteTouite::getNoteTouite($touiteID);
-                $res .= 'Note: ' . $note . '<br><br>';
-            }
+            // Affiche la note actuelle du touite
+            $note = NoteTouite::getNoteTouite($touiteID);
+            $res .= 'Note: ' . $note . '<br><br>';
+        }
 
 
             // Gestion des actions Like et Dislike en dehors de la boucle
