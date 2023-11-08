@@ -1,0 +1,15 @@
+RewriteEngine On
+
+#
+# RewriteBase indispensable sur webetu :
+# pour un projet sur webetu dans ~/www/repertoire-projet
+RewriteBase /www/vanneste3u/Touiteur/
+
+
+#
+# Pour interdire l'accès aux sous-répertoires contenant du code
+# -> ~/www/repertoire-projet/src
+# -> ~/www/repertoire-projet/sql
+# -> etc...
+RewriteRule ^sql(/.*|)$ - [NC,F]
+RewriteRule ^src(/.*|)$ - [NC,F]

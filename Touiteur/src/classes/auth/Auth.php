@@ -37,7 +37,7 @@ class Auth
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT, $options);
 
                 // Insérer le nouvel utilisateur dans la base de données avec le rôle 1 (ou votre rôle par défaut)
-                $stmt = $db->prepare("INSERT INTO User (nom, prénom, email, passwd, role) VALUES (?, ?, ?, ?, 1)");
+                $stmt = $db->prepare("INSERT INTO user (nom, prénom, email, passwd, role) VALUES (?, ?, ?, ?, 1)");
                 if ($stmt->execute([$nom, $prenom, $email, $hashedPassword])) {
                     // L'enregistrement a réussi
                     return;
