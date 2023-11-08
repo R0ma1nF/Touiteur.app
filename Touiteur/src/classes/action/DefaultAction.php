@@ -42,10 +42,10 @@ class DefaultAction extends Action
             //affiche le nom et le prénom de l'utilisateur qui a publié le touite
             $res .= $data['prénom'] . ' ' . $data['nom'] ;
             // Boutons Like et Dislike spécifiques au touite actuel
-            $contenu = $data['contenu'];
+            $contenu = $this->transformTagsToLinks($data['contenu']);
             $datePublication = $data['datePublication'];
 
-            $res .=  '<a href="?action=testdetail&touiteID=' . $touiteID . '" ><p>' . $contenu . '</p>' . $datePublication .  '</a><br>';
+            $res .=  '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication .  '</div>' . '</a><br>';
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
@@ -71,7 +71,7 @@ class DefaultAction extends Action
     }
 
 
-
+    
     /**
      * @throws AuthException
      */
@@ -109,5 +109,13 @@ class DefaultAction extends Action
         NoteTouite::dislikeTouite($userID, $touiteID);
     }
 
+    function transformTagsToLinks($text) {
+        // Utilisez une expression régulière pour trouver tous les hashtags dans le texte
+        $pattern = '/#(\w+)/';
+        $replace = '<a href="tag.php?tag=$1">#$1</a>';
+        $textAvecLiens = preg_replace($pattern, $replace, $text);
+
+        return $textAvecLiens;
+    }
 
 }
