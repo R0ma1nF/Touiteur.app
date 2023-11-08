@@ -16,6 +16,7 @@ class DefaultAction extends Action
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
         $liste = $this->listeTouite($db);
+        header("Refresh:10");
         return 'Bienvenue sur Touiter ' . '<br>' . $liste;
     }
 

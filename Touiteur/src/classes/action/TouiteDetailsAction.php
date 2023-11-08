@@ -18,12 +18,11 @@ class TouiteDetailsAction extends Action
 
     public function touiteDetail($db, $idTouite)
     {
-        $stmt = $db->prepare("SELECT t.contenu, t.datePublication, u.nom, u.prénom, n.id_touite
+        $stmt = $db->prepare("SELECT t.contenu, t.datePublication, u.nom, u.prénom, t.id_touite
                     FROM touite t
                     JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
                     JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
-                    JOIN notetouite n ON t.id_touite = n.id_touite
-                    WHERE n.id_touite = ?
+                    WHERE t.id_touite = ?
                     ORDER BY t.datePublication DESC");
         $stmt->execute([$idTouite]);
 
