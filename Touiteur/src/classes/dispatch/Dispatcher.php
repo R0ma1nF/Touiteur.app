@@ -8,6 +8,7 @@ use iutnc\touiteur\action\DisconnectAction;
 use iutnc\touiteur\action\SignInAction;
 use iutnc\touiteur\action\TouiteAction;
 use iutnc\touiteur\action\TouiteDetailsAction;
+use iutnc\touiteur\action\UserDetail;
 use iutnc\touiteur\exception\AuthException;
 
 class Dispatcher
@@ -27,6 +28,7 @@ class Dispatcher
                 'Connexion' => SignInAction::class,
                 'Accueil' => DefaultAction::class,
                 'testdetail' => TouiteDetailsAction::class,
+                'userDetail' => UserDetail::class,
                 // Add guest actions as needed
             ],
             '1' => [
@@ -36,6 +38,7 @@ class Dispatcher
                 'Deconnexion' => DisconnectAction::class,
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
+                'userDetail' => UserDetail::class,
                 // Add user actions as needed
             ],
             '100' => [
@@ -45,6 +48,7 @@ class Dispatcher
                 'Deconnexion' => DisconnectAction::class,
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
+                'userDetail' => UserDetail::class,
             ],
         ];
     }
