@@ -8,27 +8,39 @@ use iutnc\touiteur\Touite\NoteTouite;
 
 class DefaultAction extends Action
 {
-    /**
-     * @throws \Exception
-     */
     public function execute(): string
     {
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
-        $liste = $this->listeTouite($db);
-        return 'Bienvenue sur Touiter ' . '<br>' . $liste;
+        $userRole = $_SESSION['user']['role'] ?? '0';
+
+        if ($userRole == 100) {
+            return $this->adminDashboard($db);
+        } elseif ($userRole == 1) {
+            return $this->userDashboard($db);
+        } else {
+            return $this->guestDashboard($db);
+        }
     }
 
-    /**
-     * @throws \Exception
-     */
-    /**
-     * @throws \Exception
-     */
-    /**
-     * @throws \Exception
-     */
-    public function listeTouite($db)
+    public function adminDashboard($db)
+    {
+        return 'Bienvenue sur la page d\'accueil de l\'administrateur';
+    }
+
+    public function userDashboard($db)
+    {
+        $timeline = $this->getUserTimeline($db);
+        return 'Bienvenue sur votre page d\'accueil utilisateur' . '<br>' . $timeline;
+    }
+
+    public function guestDashboard($db)
+    {
+        $timeline = $this->getGuestTimeline($db);
+        return 'Bienvenue sur la page d\'accueil des invités' . '<br>' . $timeline;
+    }
+
+    public function getUserTimeline($db)
     {
         $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom
                         FROM touite t
@@ -38,52 +50,28 @@ class DefaultAction extends Action
         $stmt->execute();
         $res = '';
         while ($data = $stmt->fetch()) {
-            $touiteID = $data['id_touite'];
-            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
-            $res .= $data['prénom'] . ' ' . $data['nom'] ;
-            // Boutons Like et Dislike spécifiques au touite actuel
-            $contenu = $data['contenu'];
-            $datePublication = $data['datePublication'];
-
-            $res .= '<a href="src/Touite/TouiteDetailsAction.php"><p>' . $contenu . '</p>' . $datePublication . '</a><br>';
-            $res .= '<form method="POST" action="?action=Default">
-        <input type="hidden" name="touiteID" value="' . $touiteID . '">
-        <button type="submit" name="likeTouite">Like</button>
-        <button type="submit" name="dislikeTouite">Dislike</button>
-    </form>';
-
-            // Affiche la note actuelle du touite
-            $note = NoteTouite::getNoteTouite($touiteID);
-            $res .= 'Note: ' . $note . '<br><br>';
-        }
-
-        // Gestion des actions Like et Dislike en dehors de la boucle
-        if (isset($_POST['touiteID'])) {
-            $touiteID = (int) $_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
-            if (isset($_POST['likeTouite'])) {
-                $this->Likebutton($touiteID);
-            } elseif (isset($_POST['dislikeTouite'])) {
-                $this->Dislikebutton($touiteID);
-            }
+            // Votre code pour afficher la chronologie de l'utilisateur
         }
 
         return $res;
     }
 
+    public function getGuestTimeline($db)
+    {
+        // Logique pour afficher la chronologie des invités
+    }
 
-
-    /**
-     * @throws AuthException
-     */
-    public function Likebutton($touiteID) {
+    public function Likebutton($touiteID)
+    {
         $userID = $_SESSION['user']['id'];
-        // Bouton Like cliqué, ajoutez ici la logique pour gérer le Like
+        // Logique pour gérer le bouton Like
         NoteTouite::likeTouite($userID, $touiteID);
     }
 
-    public function Dislikebutton($touiteID) {
+    public function Dislikebutton($touiteID)
+    {
         $userID = $_SESSION['user']['id'];
-        // Bouton Dislike cliqué, ajoutez ici la logique pour gérer le Dislike
+        // Logique pour gérer le bouton Dislike
         NoteTouite::dislikeTouite($userID, $touiteID);
     }
 }
