@@ -38,7 +38,7 @@ class DefaultAction extends Action
             return $liste;
         } else {
 
-            $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom
+            $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom, u.id_utilisateur
                         FROM touite t
                         JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
                         JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
