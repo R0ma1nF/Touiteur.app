@@ -45,7 +45,7 @@ class DefaultAction extends Action
             $contenu = $data['contenu'];
             $datePublication = $data['datePublication'];
 
-            $res .= '<a href="src/Touite/TouiteDetailsAction.php"><p>' . $contenu . '</p>' . $datePublication . '</a><br>';
+            $res .=  '<a href="?action=testdetail" ><p>' . $contenu . '</p>' . $datePublication .  '</a><br>';
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
