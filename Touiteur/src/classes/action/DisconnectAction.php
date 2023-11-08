@@ -1,12 +1,14 @@
 <?php
+// DisconnectAction.php
 namespace iutnc\touiteur\action;
 
-class DisconnectAction extends Action
+class DisconnectAction
 {
-    public function execute(): string
-    {
-        session_destroy();
-        header('Location: index.php');
-        exit();
-    }
+public function __invoke(): string
+{
+    $_SESSION = [];
+    session_write_close();
+
+return "You have been logged out. <a href=\"index.php\">Return to Home</a>";
+}
 }

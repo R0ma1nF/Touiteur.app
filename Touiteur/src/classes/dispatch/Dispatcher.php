@@ -1,10 +1,6 @@
 <?php
-
-// Dispatcher.php
 namespace iutnc\touiteur\dispatch;
 
-
-use iutnc\touiteur\action\ActionTouite;
 use iutnc\touiteur\action\AddUserAction;
 use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\DisconnectAction;
@@ -12,7 +8,6 @@ use iutnc\touiteur\action\SignInAction;
 use iutnc\touiteur\action\TouiteAction;
 use iutnc\touiteur\action\TouiteDetailsAction;
 use iutnc\touiteur\exception\AuthException;
-use iutnc\touiteur\Touite\NoteTouite;
 
 class Dispatcher
 {
@@ -24,31 +19,46 @@ class Dispatcher
         $action = $_GET['action'] ?? 'default';
         $this->action = $action;
 
-        // Initialize the action mappings as before, mapping action names to their corresponding Action classes
+        // Define actions associated with roles
         $this->actionMappings = [
-            'Inscription' => AddUserAction::class,
-            'Connexion' => SignInAction::class,
-            'Accueil' => DefaultAction::class,
-            'Deconnexion' => DisconnectAction::class,
-            'Publier Touit' => TouiteAction::class,
-            'testdetail' => TouiteDetailsAction::class,
-
-
-
-            // Add other actions as needed
+            '10' => [
+                'Inscription' => AddUserAction::class,
+                'Connexion' => SignInAction::class,
+                'Accueil' => DefaultAction::class,
+                'testdetail' => TouiteDetailsAction::class,
+                // Add guest actions as needed
+            ],
+            '1' => [
+                'Inscription' => AddUserAction::class,
+                'Connexion' => SignInAction::class,
+                'Accueil' => DefaultAction::class,
+                'Deconnexion' => DisconnectAction::class,
+                'Publier Touit' => TouiteAction::class,
+                'testdetail' => TouiteDetailsAction::class,
+                // Add user actions as needed
+            ],
+            '100' => [
+                'Inscription' => AddUserAction::class,
+                'Connexion' => SignInAction::class,
+                'Accueil' => DefaultAction::class,
+                'Deconnexion' => DisconnectAction::class,
+                'Publier Touit' => TouiteAction::class,
+                'testdetail' => TouiteDetailsAction::class,
+            ],
         ];
     }
 
     public function run(): void
     {
-        // Check if the action exists in the mappings
-        if (isset($this->actionMappings[$this->action])) {
-            if ($this->action)
-            $actionClass = $this->actionMappings[$this->action];
+        $userRole = $_SESSION['user']['role'] ?? $_SESSION['user']['role'] = '10';
+
+        // Check if the action exists in the user's role actions
+        if (isset($this->actionMappings[$userRole][$this->action])) {
+            $actionClass = $this->actionMappings[$userRole][$this->action];
             $actionObject = new $actionClass();
             $pageContent = $actionObject();
         } else {
-            // Default action for unknown actions
+            // Default action for unknown actions or unauthorized actions
             $defaultAction = new DefaultAction();
             $pageContent = $defaultAction();
         }
@@ -67,28 +77,30 @@ class Dispatcher
         echo '<meta charset="UTF-8">';
         echo '<link rel="stylesheet" type="text/css" href="css/index.css">';
         echo '<title>Touiteur</title>';
-        // N'insérez pas de balises de titre (h1) ici, car vous avez déjà ajouté un titre dans la balise head.
-
         echo '</head>';
         echo '<body>';
         echo '<header>';
         echo '<h1>Touiteur</h1>';
         echo '<div class="top-bar">';
 
-        // Laissez le reste de votre code inchangé
-        foreach ($this->actionMappings as $actionName => $actionClass) {
-            echo '<form method="GET" action="index.php">';
-            echo '<input type="hidden" name="action" value="' . $actionName . '">';
-            echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
-            echo '</form>';
+        $userRole = $_SESSION['user']['role'] ?? 'guest';
+        // Render the appropriate action links based on the user's role
+        if (isset($this->actionMappings[$userRole]) && is_array($this->actionMappings[$userRole])) {
+            foreach ($this->actionMappings[$userRole] as $actionName => $actionClass) {
+                if ($actionName !== 'testdetail') {
+                    echo '<form method="GET" action="index.php">';
+                    echo '<input type="hidden" name="action" value="' . $actionName . '">';
+                    echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
+                    echo '</form>';
+                }
+            }
         }
-        
-        echo '</div>'; // Fermez la div du bandeau supérieur
+
+        echo '</div>';
         echo '</header>';
 
-        echo $html; // Affiche le contenu de la page généré par l'action
+        echo $html; // Display the content generated by the action
         echo '</body>';
         echo '</html>';
     }
-
 }

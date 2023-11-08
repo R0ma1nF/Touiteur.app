@@ -76,14 +76,38 @@ class DefaultAction extends Action
      * @throws AuthException
      */
     public function Likebutton($touiteID) {
-        $userID = $_SESSION['user']['id'];
+        $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
+        if ($userID == null) {
+            // Redirigez l'utilisateur vers la page de connexion s'il n'est pas connecté (ou vers la page d'inscription s'il n'a pas de compte)
+            //en lui proposant de se connecter ou de s'inscrire pour pouvoir liker un touite et afficher un message d'erreur
+            echo '<h2>Erreur</h2>';
+            echo "Vous devez être connecté pour pouvoir liker un touite.";
+            echo '<br>';
+            echo '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
+            echo '<br>';
+            echo '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+            exit();
+        }
         // Bouton Like cliqué, ajoutez ici la logique pour gérer le Like
         NoteTouite::likeTouite($userID, $touiteID);
     }
-
     public function Dislikebutton($touiteID) {
-        $userID = $_SESSION['user']['id'];
+        $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
+
+        if ($userID == null) {
+            // Redirigez l'utilisateur vers la page de connexion s'il n'est pas connecté (ou vers la page d'inscription s'il n'a pas de compte)
+            //en lui proposant de se connecter ou de s'inscrire pour pouvoir liker un touite et afficher un message d'erreur
+            echo '<h2>Erreur</h2>';
+            echo "Vous devez être connecté pour pouvoir disliker un touite.";
+            echo '<br>';
+            echo '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
+            echo '<br>';
+            echo '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+            exit();
+        }
         // Bouton Dislike cliqué, ajoutez ici la logique pour gérer le Dislike
         NoteTouite::dislikeTouite($userID, $touiteID);
     }
+
+
 }
