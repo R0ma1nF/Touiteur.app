@@ -2,10 +2,7 @@
 
 namespace iutnc\touiteur\action;
 
-use http\Params;
-use iutnc\touiteur\action\Action;
 use iutnc\touiteur\db\ConnectionFactory;
-use iutnc\touiteur\Touite\NoteTouite;
 
 class TouiteDetailsAction extends Action
 {
@@ -13,7 +10,8 @@ class TouiteDetailsAction extends Action
     {
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
-        $liste = $this->touiteDetail($db , $touiteID);
+        $touiteID = isset($_GET['touiteID']) ? (int)$_GET['touiteID'] : 0; // Get the touiteID from the query parameter
+        $liste = $this->touiteDetail($db, $touiteID);
         return 'Bienvenue sur Touiter' . '<br>' . $liste;
     }
 
@@ -28,7 +26,7 @@ class TouiteDetailsAction extends Action
                     ORDER BY t.datePublication DESC");
         $stmt->execute([$idTouite]);
 
-        $details = ''; // Une chaîne pour stocker les détails des touites
+        $details = ''; // A string to store the details of the touite
 
         while ($data = $stmt->fetch()) {
             $details .= 'Contenu: ' . $data['contenu'] . "<br>";
@@ -38,9 +36,6 @@ class TouiteDetailsAction extends Action
             $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
         }
 
-        return $details; // Retourne une seule chaîne contenant les détails des touites
+        return $details; // Returns a single string containing the details of the touite
     }
-
-
-
 }
