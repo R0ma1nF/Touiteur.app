@@ -29,15 +29,14 @@ class TouiteDetailsAction extends Action
 
         $details = ''; // A string to store the details of the touite
 
-        while ($data = $stmt->fetch()) {
-            $details .= 'Contenu: ' . $data['contenu'] . "<br>";
-            $details .= 'Date de Publication: ' . $data['datePublication'] . "<br>";
-            $details .= 'Nom: ' . $data['nom'] . "<br>";
-            $details .= 'Prénom: ' . $data['prénom'] . "<br>";
-            $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
-            $details .= 'Note : ' . NoteTouite::getNoteTouite($idTouite);
-        }
-
+        $data = $stmt->fetch();
+        $details .= 'Contenu: ' . $data['contenu'] . "<br>";
+        $details .= 'Date de Publication: ' . $data['datePublication'] . "<br>";
+        $details .= 'Nom: ' . $data['nom'] . "<br>";
+        $details .= 'Prénom: ' . $data['prénom'] . "<br>";
+        $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
+        $details .= 'Note : ' . NoteTouite::getNoteTouite($idTouite);
+        
         return $details; // Returns a single string containing the details of the touite
     }
 }
