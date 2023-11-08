@@ -17,7 +17,7 @@ class DefaultAction extends Action
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
         $liste = $this->listeTouite($db);
-        header("Refresh:10");
+        header("Refresh:10 ");
         return 'Bienvenue sur Touiter ' . '<br>' . $liste;
     }
 
@@ -127,114 +127,52 @@ class DefaultAction extends Action
 
     public function getUserWallTouites($userID)
     {
-        $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
 
 
-        //requete pour recuperer tous les touites des utilisateurs et des tags que l'utilisateur suit
-        $stmt = $db->prepare("SELECT Touite.ID_Touite, Touite.Contenu, Touite.DatePublication, User.nom, User.prénom, User.id_utilisateur
-FROM (
-    SELECT T.ID_Touite, T.Contenu, T.DatePublication
-    FROM Touite T
-    INNER JOIN ListeTouiteUtilisateur LTU ON T.ID_Touite = LTU.ID_Touite
-    INNER JOIN Abonnement A ON LTU.ID_Utilisateur = A.ID_UtilisateurSuivi
-    WHERE A.ID_Utilisateur = :userID
-    UNION
-    SELECT T.ID_Touite, T.Contenu, T.DatePublication
-    FROM Touite T
-    INNER JOIN ListeTouiteTag LTT ON T.ID_Touite = LTT.ID_Touite
-    INNER JOIN AbonnementTag ABT ON ABT.ID_Tag = LTT.ID_Tag
-    WHERE ABT.ID_Utilisateur = :userID
-) AS Touite
-INNER JOIN ListeTouiteUtilisateur LTU ON Touite.ID_Touite = LTU.ID_Touite
-INNER JOIN User ON LTU.ID_Utilisateur = User.id_utilisateur
-ORDER BY Touite.DatePublication DESC;
-");
+        // Requête pour récupérer les touites des personnes et des tags suivis par l'utilisateur
+        $stmt1 = $db->prepare("select t.* , u.nom, u.prénom, u.id_utilisateur
+        from touite as t
+        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
+        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
+        left join abonnement as a on lu.ID_Utilisateur = a.ID_UtilisateurSuivi
+        left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
+        left join user as u on lu.ID_Utilisateur = u.id_utilisateur
+        where a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID
+        order by t.DatePublication desc
+        ");
 
-
-
-        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-
+        $stmt1->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt1->execute();
         $res = '';
+        $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
 
-        while ($data = $stmt->fetch()) {
-            // Vous pouvez formater ici le contenu de chaque touite comme vous le souhaitez
-            $touiteID = $data['ID_Touite'];
-            $contenu = $this->transformTagsToLinks($data['Contenu']);
-            $datePublication = $data['DatePublication'];
-            $prenom = $data['prénom'];
-            $nom = $data['nom'];
-            $userId = $data["id_utilisateur"];
+        // Requête pour récupérer tous les touites de la base de données
+        $stmt2 = $db->prepare("select t.* , u.nom, u.prénom, u.id_utilisateur
+        from touite as t
+        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
+        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
+        left join user as u on lu.ID_Utilisateur = u.id_utilisateur
+        where t.ID_Touite not in (select t.ID_Touite
+        from touite as t
+        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
+        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
+        left join abonnement as a on lu.ID_Utilisateur = a.ID_UtilisateurSuivi
+        left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
+            where (a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID))
+            order by t.DatePublication desc");
 
+        $stmt2->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt2->execute();
+        $touites = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+       $res1 = '';
+        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res1);
 
-            $res .=  '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
-            $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
-            $res .= '<form method="POST" action="?action=Default">
-        <input type="hidden" name="touiteID" value="' . $touiteID . '">
-        <button type="submit" name="likeTouite">Like</button>
-        <button type="submit" name="dislikeTouite">Dislike</button>
-    </form>';
-
-            // Affiche la note actuelle du touite
-            $note = NoteTouite::getNoteTouite($touiteID);
-            $res .= 'Note: ' . $note . '<br><br>';
-        }
-
-        //maintenant on recupere tous les touites qui ne sont pas suivis par l'utilisateur
-        $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom, u.id_utilisateur
-FROM touite t
-JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
-JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
-WHERE u.id_utilisateur != :userID
-AND t.id_touite NOT IN (
-    SELECT Touite.ID_Touite
-    FROM (
-        SELECT T.ID_Touite, T.Contenu, T.DatePublication
-        FROM Touite T
-        INNER JOIN ListeTouiteUtilisateur LTU ON T.ID_Touite = LTU.ID_Touite
-        INNER JOIN Abonnement A ON LTU.ID_Utilisateur = A.ID_UtilisateurSuivi
-        WHERE A.ID_Utilisateur = :userID
-        UNION
-        SELECT T.ID_Touite, T.Contenu, T.DatePublication
-        FROM Touite T
-        INNER JOIN ListeTouiteTag LTT ON T.ID_Touite = LTT.ID_Touite
-        INNER JOIN AbonnementTag ABT ON ABT.ID_Tag = LTT.ID_Tag
-        WHERE ABT.ID_Utilisateur = :userID
-    ) AS Touite
-    INNER JOIN ListeTouiteUtilisateur LTU ON Touite.ID_Touite = LTU.ID_Touite
-)
-ORDER BY t.datePublication DESC;
-");
-
-        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-        while ($data = $stmt->fetch()) {
-            $userId = $data['id_utilisateur'];
-            $touiteID = $data['id_touite'];
-            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
-            $prenom = $data['prénom'];
-            $nom = $data['nom'];
-            // Boutons Like et Dislike spécifiques au touite actuel
-            $contenu = $this->transformTagsToLinks($data['contenu']);
-            $datePublication = $data['datePublication'];
-
-            $res .=  '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
-            $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
-            $res .= '<form method="POST" action="?action=Default">
-        <input type="hidden" name="touiteID" value="' . $touiteID . '">
-        <button type="submit" name="likeTouite">Like</button>
-        <button type="submit" name="dislikeTouite">Dislike</button>
-    </form>';
-
-            // Affiche la note actuelle du touite
-            $note = NoteTouite::getNoteTouite($touiteID);
-            $res .= 'Note: ' . $note . '<br><br>';
-        }
-
-
-        return $res;
+        return $res . $res1;
     }
+
+
 
 
     function transformTagsToLinks($text)
@@ -245,6 +183,36 @@ ORDER BY t.datePublication DESC;
         $textAvecLiens = preg_replace($pattern, $replace, $text);
 
         return $textAvecLiens;
+    }
+
+    /**
+     * @param $touites
+     * @param string $res
+     * @return array
+     */
+    public function extracted($touites, string $res): array
+    {
+        foreach ($touites as $data) {
+            $touiteID = $data['ID_Touite'];
+            $contenu = $this->transformTagsToLinks($data['Contenu']);
+            $datePublication = $data['DatePublication'];
+            $prenom = $data['prénom'];
+            $nom = $data['nom'];
+            $userId = $data['id_utilisateur'];
+
+            $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
+            $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
+            $res .= '<form method="POST" action="?action=Default">
+            <input type="hidden" name="touiteID" value="' . $touiteID . '">
+            <button type="submit" name="likeTouite">Like</button>
+            <button type="submit" name="dislikeTouite">Dislike</button>
+        </form>';
+
+            // Affiche la note actuelle du touite
+            $note = NoteTouite::getNoteTouite($touiteID);
+            $res .= 'Note: ' . $note . '<br><br>';
+        }
+        return array($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note);
     }
 
 
