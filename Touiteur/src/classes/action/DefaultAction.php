@@ -45,14 +45,17 @@ class DefaultAction extends Action
                         ORDER BY t.datePublication DESC");
             $stmt->execute();
             $res = '';
-            while ($data = $stmt->fetch()) {
-                $touiteID = $data['id_touite'];
-                //affiche le nom et le prénom de l'utilisateur qui a publié le touite
-                $res .= $data['prénom'] . ' ' . $data['nom'];
-                // Boutons Like et Dislike spécifiques au touite actuel
-                $contenu = $this->transformTagsToLinks($data['contenu']);
-                $datePublication = $data['datePublication'];
+           while ($data = $stmt->fetch()) {
+            $touiteID = $data['id_touite'];
+            $userId = $data["id_utilisateur"];
+            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
+            $prenom = $data['prénom'];
+            $nom = $data['nom'];
+            // Boutons Like et Dislike spécifiques au touite actuel
+            $contenu = $this->transformTagsToLinks($data['contenu']);
+            $datePublication = $data['datePublication'];
 
+                $res .=  '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
                 $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
                 $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
