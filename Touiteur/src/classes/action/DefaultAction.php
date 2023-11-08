@@ -50,7 +50,37 @@ class DefaultAction extends Action
         $stmt->execute();
         $res = '';
         while ($data = $stmt->fetch()) {
+<<<<<<< HEAD
             // Votre code pour afficher la chronologie de l'utilisateur
+=======
+            $touiteID = $data['id_touite'];
+            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
+            $res .= $data['prénom'] . ' ' . $data['nom'] ;
+            // Boutons Like et Dislike spécifiques au touite actuel
+            $contenu = $data['contenu'];
+            $datePublication = $data['datePublication'];
+
+            $res .=  '<a href="?action=testdetail" ><p>' . $contenu . '</p>' . $datePublication .  '</a><br>';
+            $res .= '<form method="POST" action="?action=Default">
+        <input type="hidden" name="touiteID" value="' . $touiteID . '">
+        <button type="submit" name="likeTouite">Like</button>
+        <button type="submit" name="dislikeTouite">Dislike</button>
+    </form>';
+
+            // Affiche la note actuelle du touite
+            $note = NoteTouite::getNoteTouite($touiteID);
+            $res .= 'Note: ' . $note . '<br><br>';
+        }
+
+        // Gestion des actions Like et Dislike en dehors de la boucle
+        if (isset($_POST['touiteID'])) {
+            $touiteID = (int) $_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+            if (isset($_POST['likeTouite'])) {
+                $this->Likebutton($touiteID);
+            } elseif (isset($_POST['dislikeTouite'])) {
+                $this->Dislikebutton($touiteID);
+            }
+>>>>>>> 1a4102b0a83f4411919be98dd366e3cf76fd3a07
         }
 
         return $res;

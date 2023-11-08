@@ -10,6 +10,7 @@ use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\DisconnectAction;
 use iutnc\touiteur\action\SignInAction;
 use iutnc\touiteur\action\TouiteAction;
+use iutnc\touiteur\action\TouiteDetailsAction;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\Touite\NoteTouite;
 
@@ -30,6 +31,7 @@ class Dispatcher
             'Accueil' => DefaultAction::class,
             'Deconnexion' => DisconnectAction::class,
             'Publier Touit' => TouiteAction::class,
+            'testdetail' => TouiteDetailsAction::class,
 
 
 
@@ -41,9 +43,9 @@ class Dispatcher
     {
         // Check if the action exists in the mappings
         if (isset($this->actionMappings[$this->action])) {
+            if ($this->action)
             $actionClass = $this->actionMappings[$this->action];
             $actionObject = new $actionClass();
-
             $pageContent = $actionObject();
         } else {
             // Default action for unknown actions
