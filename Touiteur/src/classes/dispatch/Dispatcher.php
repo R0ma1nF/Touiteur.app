@@ -1,4 +1,5 @@
 <?php
+
 namespace iutnc\touiteur\dispatch;
 
 use iutnc\touiteur\action\AddUserAction;
