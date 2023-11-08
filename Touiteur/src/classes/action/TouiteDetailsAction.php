@@ -3,6 +3,7 @@
 namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\db\ConnectionFactory;
+use iutnc\touiteur\Touite\NoteTouite;
 
 class TouiteDetailsAction extends Action
 {
@@ -34,6 +35,7 @@ class TouiteDetailsAction extends Action
             $details .= 'Nom: ' . $data['nom'] . "<br>";
             $details .= 'Prénom: ' . $data['prénom'] . "<br>";
             $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
+            $details .= 'Note : ' . NoteTouite::getNoteTouite($idTouite);
         }
 
         return $details; // Returns a single string containing the details of the touite
