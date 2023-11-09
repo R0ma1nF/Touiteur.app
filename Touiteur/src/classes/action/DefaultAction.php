@@ -73,13 +73,16 @@ class DefaultAction extends Action
             }
 
 
-            // Gestion des actions Like et Dislike en dehors de la boucle
             if (isset($_POST['touiteID'])) {
                 $touiteID = (int)$_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+                $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
+
                 if (isset($_POST['likeTouite'])) {
-                    $this->Likebutton($touiteID);
+                    $this->Likebutton($touiteID, $userID);
                 } elseif (isset($_POST['dislikeTouite'])) {
-                    $this->Dislikebutton($touiteID);
+                    $this->Dislikebutton($touiteID, $userID);
+                } elseif (isset($_POST['deleteTouite'])) {
+                    $res .= SupprimerTouite::supprimerTouite($userID, $touiteID);
                 }
             }
 
@@ -189,7 +192,6 @@ class DefaultAction extends Action
     public function extracted($touites, string $res): array
     {
 
-        // ... (autres parties du code)
 
         foreach ($touites as $data) {
             // Extraction des données du touite
@@ -216,14 +218,19 @@ class DefaultAction extends Action
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
 
-            // Gestion de delete
-            if (isset($_POST['touiteID']) && isset($_POST['userID'])) {
-                $touiteID = (int)$_POST['touiteID'];
-                $userID = (int)$_POST['userID'];
-                if (isset($_POST['deleteTouite'])) {
-                    $res.= SupprimerTouite::supprimerTouite($userID, $touiteID);
+            if (isset($_POST['touiteID'])) {
+                $touiteID = (int)$_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+                $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
+
+                if (isset($_POST['likeTouite'])) {
+                    $this->Likebutton($touiteID, $userID);
+                } elseif (isset($_POST['dislikeTouite'])) {
+                    $this->Dislikebutton($touiteID, $userID);
+                } elseif (isset($_POST['deleteTouite'])) {
+                    $res .= SupprimerTouite::supprimerTouite($userID, $touiteID);
                 }
             }
+
         }
 
 // ... (autres parties du code)

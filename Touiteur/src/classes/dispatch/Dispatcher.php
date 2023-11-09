@@ -5,6 +5,7 @@ namespace iutnc\touiteur\dispatch;
 use iutnc\touiteur\action\AddUserAction;
 use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\DisconnectAction;
+use iutnc\touiteur\action\NarcissisticUserAction;
 use iutnc\touiteur\action\SignInAction;
 use iutnc\touiteur\action\TagAction;
 use iutnc\touiteur\action\TouiteAction;
@@ -42,6 +43,7 @@ class Dispatcher
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
                 'tagList' => TagAction::class,
+                'mesabonnés' => narcissisticUserAction::class
                 // Add user actions as needed
             ],
             '100' => [
@@ -53,6 +55,7 @@ class Dispatcher
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
                 'tagList' => TagAction::class,
+                'mesabonnés' => narcissisticUserAction::class
             ],
         ];
     }
