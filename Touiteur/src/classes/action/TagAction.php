@@ -9,6 +9,9 @@ use iutnc\touiteur\action\DefaultAction;
 
 class TagAction extends Action
 {
+    /**
+     * @throws \Exception
+     */
     public function execute(): string
     {
         if (isset($_GET['tag'])) {

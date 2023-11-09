@@ -30,6 +30,7 @@ class Dispatcher
                 'Accueil' => DefaultAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
+                'tagList' => TagAction::class,
                 // Add guest actions as needed
             ],
             '1' => [
@@ -40,7 +41,7 @@ class Dispatcher
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
-                'tagListe' => TagAction::class,
+                'tagList' => TagAction::class,
                 // Add user actions as needed
             ],
             '100' => [
@@ -51,6 +52,7 @@ class Dispatcher
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
+                'tagList' => TagAction::class,
             ],
         ];
     }
