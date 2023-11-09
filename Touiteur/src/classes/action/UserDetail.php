@@ -6,6 +6,7 @@ use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\Touite\NoteTouite;
 use iutnc\touiteur\follow\UserFollow;
+use PDO;
 
 class UserDetail extends Action
 {
@@ -50,42 +51,36 @@ class UserDetail extends Action
                 $res.= '<div>Vous ne suivez pas cet utilisateur.</div>';
             }
         }
+        $touites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-
-
-
-        while ($data = $stmt->fetch()) {
-            $touiteID = $data['id_touite'];
-
-            // Boutons Like et Dislike spécifiques au touite actuel
-            $contenu = $data['contenu'];
-            $datePublication = $data['datePublication'];
-
-            $res .=  '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication .  '</div>' . '</a>';
-            $res .= '<form method="POST" >
+        foreach ($touites as $data) {
+            // Extraction des données du touite
+            $touiteID = $data['id_touite'] ;
+            $contenu = $data['contenu'] ;
+            $datePublication = $data['datePublication'] ;
+            // Affichage des informations du touite
+            $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' .'</div>';
+            $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
+            $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
         <button type="submit" name="dislikeTouite">Dislike</button>
     </form>';
 
+            // Gestion des actions Like et Dislike à l'intérieur de la boucle
+            if (isset($_POST['touiteID']) && $_POST['touiteID'] == $touiteID) {
+                if (isset($_POST['likeTouite'])) {
+                    $this->Likebutton($touiteID);
+                } elseif (isset($_POST['dislikeTouite'])) {
+                    $this->Dislikebutton($touiteID);
+                }
+            }
+
             // Affiche la note actuelle du touite
-            $note = NoteTouite::getNoteTouite($touiteID);
+            $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
         }
-
-        // Gestion des actions Like et Dislike à l'intérieur de la boucle
-        if (isset($_POST['touiteID']) && $_POST['touiteID'] == $touiteID) {
-            if (isset($_POST['likeTouite'])) {
-                $this->Likebutton($touiteID);
-            } elseif (isset($_POST['dislikeTouite'])) {
-                $this->Dislikebutton($touiteID);
-            }
-        }
-
-
-
-
         return $res;
     }
 
