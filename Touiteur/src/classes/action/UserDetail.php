@@ -43,7 +43,11 @@ class UserDetail extends Action
         if (isset($_POST['followUser'])) {
             $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
             if (!$followResult) {
-                $res.= '<div>Vous suivez déjà cet utilisateur.</div>';
+                if ($userId == $_SESSION['user']['id']){
+                    $res.="vous ne pouvez pas vous suivre vous même";
+                }else {
+                    $res .= '<div>Vous suivez déjà cet utilisateur.</div>';
+                }
             }
         } elseif (isset($_POST['unfollowUser'])) {
             $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);

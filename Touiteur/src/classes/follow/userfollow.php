@@ -18,7 +18,9 @@ class UserFollow
         $stmtCheck->bindParam(':followedID', $followedID, PDO::PARAM_INT);
         $stmtCheck->execute();
 
-        if ($stmtCheck->rowCount() > 0) {
+        if ($followerID == $followedID){
+            return false;
+        }else if ($stmtCheck->rowCount() > 0) {
             // User is already following, handle it accordingly (e.g., show a message)
             return false;
         } else {
