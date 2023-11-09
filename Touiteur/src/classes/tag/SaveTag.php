@@ -29,7 +29,7 @@ class SaveTag {
     function transformTagsToLinks($text) {
         // Utilisez une expression régulière pour trouver tous les hashtags dans le texte
         $pattern = '/#(\w+)/';
-        $replace = '<a href="tag.php?tag=$1">#$1</a>';
+        $replace = '<a href="?action=tagListe&$1">#$1</a>';
         $textAvecLiens = preg_replace($pattern, $replace, $text);
 
         return $textAvecLiens;
