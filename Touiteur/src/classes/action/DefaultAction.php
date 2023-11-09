@@ -6,6 +6,7 @@ use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\tag\SaveTag;
 use iutnc\touiteur\Touite\NoteTouite;
+use iutnc\touiteur\Touite\SupprimerTouite;
 use PDO;
 
 class DefaultAction extends Action
@@ -205,22 +206,24 @@ class DefaultAction extends Action
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
+        <input type="hidden" name="userID" value="' . $userId . '">
         <button type="submit" name="likeTouite">Like</button>
         <button type="submit" name="dislikeTouite">Dislike</button>
+        <button type="submit" name="deleteTouite">Delete</button>
     </form>';
-
-            // Gestion des actions Like et Dislike à l'intérieur de la boucle
-            if (isset($_POST['touiteID']) && $_POST['touiteID'] == $touiteID) {
-                if (isset($_POST['likeTouite'])) {
-                    $this->Likebutton($touiteID);
-                } elseif (isset($_POST['dislikeTouite'])) {
-                    $this->Dislikebutton($touiteID);
-                }
-            }
 
             // Affiche la note actuelle du touite
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
+
+            // Gestion de delete
+            if (isset($_POST['touiteID']) && isset($_POST['userID'])) {
+                $touiteID = (int)$_POST['touiteID'];
+                $userID = (int)$_POST['userID'];
+                if (isset($_POST['deleteTouite'])) {
+                    $res.= SupprimerTouite::supprimerTouite($userID, $touiteID);
+                }
+            }
         }
 
 // ... (autres parties du code)
