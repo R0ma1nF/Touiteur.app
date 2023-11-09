@@ -54,11 +54,12 @@ class DefaultAction extends Action
                 $prenom = $data['prénom'];
                 $nom = $data['nom'];
                 // Boutons Like et Dislike spécifiques au touite actuel
-                $contenu = $data['contenu'];
+                $SaveTag = new SaveTag();
+                $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
                 $datePublication = $data['datePublication'];
 
-                $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
-                $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
+                $res .=  '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
+                $res .=  '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication .  '</div>' . '</a><br>';
                 $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
@@ -192,7 +193,8 @@ class DefaultAction extends Action
         foreach ($touites as $data) {
             // Extraction des données du touite
             $touiteID = $data['ID_Touite'] ?? null;
-            $contenu = $data['Contenu'] ?? null;
+            $SaveTag = new SaveTag();
+            $contenu = $SaveTag->transformTagsToLinks($data['Contenu']) ?? null;
             $datePublication = $data['DatePublication'] ?? null;
             $prenom = $data['prénom'] ?? null;
             $nom = $data['nom'] ?? null;

@@ -25,7 +25,7 @@ class SaveTag {
 
     function transformTagsToLinks($text) {
         $pattern = '/#(\w+)/';
-        $replace = '<a href="?action=tagListe&tag=$1">#$1</a>';
+        $replace = '<a href="">#$1</a>';
         $textAvecLiens = preg_replace($pattern, $replace, $text);
 
         return $textAvecLiens;
