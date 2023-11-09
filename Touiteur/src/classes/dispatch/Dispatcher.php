@@ -30,6 +30,7 @@ class Dispatcher
                 'Accueil' => DefaultAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
+                'tagList' => TagAction::class,
                 // Add guest actions as needed
             ],
             '1' => [
@@ -40,7 +41,7 @@ class Dispatcher
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
-                'tagListe' => TagAction::class,
+                'tagList' => TagAction::class,
                 // Add user actions as needed
             ],
             '100' => [
@@ -51,6 +52,7 @@ class Dispatcher
                 'Publier Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
+                'tagList' => TagAction::class,
             ],
         ];
     }
@@ -95,10 +97,14 @@ class Dispatcher
         if (isset($this->actionMappings[$userRole]) && is_array($this->actionMappings[$userRole])) {
             foreach ($this->actionMappings[$userRole] as $actionName => $actionClass) {
                 if ($actionName !== 'testdetail') {
-                    echo '<form method="GET" action="index.php">';
-                    echo '<input type="hidden" name="action" value="' . $actionName . '">';
-                    echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
-                    echo '</form>';
+                    if ($actionName !== 'userDetail') {
+                        if ($actionName !== 'tagList') {
+                            echo '<form method="GET" action="index.php">';
+                            echo '<input type="hidden" name="action" value="' . $actionName . '">';
+                            echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
+                            echo '</form>';
+                        }
+                    }
                 }
             }
         }
