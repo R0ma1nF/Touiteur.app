@@ -1,15 +1,15 @@
 /* Add this CSS to your style.css file or in a <style> tag within the HTML */
 
 body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #fff;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
 }
 
 header {
-    background-color: #1da1f2;
-    color: #fff;
+    background-color: #333;
+    color: red;
     text-align: center;
     padding: 10px;
 }
@@ -19,8 +19,8 @@ h1 {
 }
 
 button {
-    background-color: #1da1f2;
-    color: #fff;
+    background-color: #007bff;
+    color: red;
     border: none;
     padding: 10px 20px;
     margin: 5px;
@@ -28,7 +28,7 @@ button {
 }
 
 button:hover {
-    background-color: #0d91e5;
+    background-color: #0056b3;
 }
 
 main {
@@ -36,16 +36,7 @@ main {
 }
 
 form {
-    display: flex;
-    justify-content: center;
-}
-
-div {
-    text-align: center;
-    border: 1px solid #ddd; /* Ajoute une bordure grise */
-    border-radius: 5px; /* Bords arrondis */
-    padding: 15px; /* Ajoute un peu d'espace à l'intérieur de la div */
-    margin: 10px; /* Ajoute une marge autour de la div */
+    display: inline;
 }
 
 
