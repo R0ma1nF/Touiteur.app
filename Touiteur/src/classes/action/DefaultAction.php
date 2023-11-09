@@ -40,12 +40,19 @@ class DefaultAction extends Action
             $liste = $this->getUserWallTouites($_SESSION['user']['id']);
             return $liste;
         } else {
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get the current page number
+            $itemsPerPage = 10; // Set the number of touites to display per page
+            $offset = ($page - 1) * $itemsPerPage; // Calculate the offset for the SQL query
 
             $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom, u.id_utilisateur
-                        FROM touite t
-                        JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
-                        JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
-                        ORDER BY t.datePublication DESC");
+                    FROM touite t
+                    JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
+                    JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
+                    ORDER BY t.datePublication DESC
+                    LIMIT :itemsPerPage OFFSET :offset");
+
+            $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             $res = '';
             while ($data = $stmt->fetch()) {
@@ -64,7 +71,9 @@ class DefaultAction extends Action
 
                 $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
                 $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
-                $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+                if ($imagePath != 'chemin_image_par_defaut.jpg') {
+                    $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+                }
                 $res .= '<form method="POST" action="?action=Default">
                 <input type="hidden" name="touiteID" value="' . $touiteID . '">
                 <button type="submit" name="likeTouite">Like</button>
@@ -89,12 +98,26 @@ class DefaultAction extends Action
                     $res .= SupprimerTouite::supprimerTouite($userID, $touiteID);
                 }
             }
+            $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+            $totalPages = ceil($totalTouites / $itemsPerPage);
+
+            for ($i = 1; $i <= $totalPages; $i++) {
+                $res .= '<a href="?action=Default&page=' . $i . '">' . $i . '</a> ';
+            }
+
 
             return $res;
         }
 
     }
+    private function getTotalTouitesCount($db)
+    {
+        $stmt = $db->prepare("SELECT COUNT(*) as total FROM touite");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        return $result['total'];
+    }
 
     /**
      * @throws AuthException
@@ -142,51 +165,85 @@ class DefaultAction extends Action
     public function getUserWallTouites($userID): string
     {
         $db = ConnectionFactory::makeConnection();
-        $requetesuivi = "select t.* , u.nom, u.prénom, u.id_utilisateur
-        from touite as t
-        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
-        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
-        left join abonnement as a on lu.ID_Utilisateur = a.ID_UtilisateurSuivi
-        left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
-        left join user as u on lu.ID_Utilisateur = u.id_utilisateur
-        where a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID
-        order by t.DatePublication desc";
-        $requeteautre = "select t.* , u.nom, u.prénom, u.id_utilisateur
-        from touite as t
-        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
-        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
-        left join user as u on lu.ID_Utilisateur = u.id_utilisateur
-        where t.ID_Touite not in (select t.ID_Touite
-        from touite as t
-        left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
-        left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
-        left join abonnement as a on lu.ID_Utilisateur = a.ID_UtilisateurSuivi
-        left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
-            where (a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID))
-            order by t.DatePublication desc";
-        // Requête pour récupérer les touites des personnes et des tags suivis par l'utilisateur
-        $stmt1 = $db->prepare($requetesuivi);
 
+        $itemsPerPage = 10;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($page - 1) * $itemsPerPage;
+        $requetesuivi = "SELECT t.*, u.nom, u.prénom, u.id_utilisateur
+                FROM touite AS t
+                LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
+                LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
+                LEFT JOIN abonnement AS a ON lu.ID_Utilisateur = a.ID_UtilisateurSuivi
+                LEFT JOIN abonnementtag AS at ON lt.ID_Tag = at.ID_Tag
+                LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
+                WHERE a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID
+                ORDER BY t.DatePublication DESC
+                LIMIT :offset, :itemsPerPage";
+
+        $requeteautre = "SELECT t.*, u.nom, u.prénom, u.id_utilisateur
+                FROM touite AS t
+                LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
+                LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
+                LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
+                WHERE t.ID_Touite NOT IN (
+                    SELECT t.ID_Touite
+                    FROM touite AS t
+                    LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
+                    LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
+                    LEFT JOIN abonnement AS a ON lu.ID_Utilisateur = a.ID_UtilisateurSuivi
+                    LEFT JOIN abonnementtag AS at ON lt.ID_Tag = at.ID_Tag
+                    WHERE (a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID)
+                )
+                ORDER BY t.DatePublication DESC
+                LIMIT :offset, :itemsPerPage";
+
+        $stmt1 = $db->prepare($requetesuivi);
         $stmt1->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt1->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt1->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
         $stmt1->execute();
         $res = '';
+
         $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+
         if ($touites != null) {
             list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
         }
-        // Requête pour récupérer tous les touites de la base de données
-        $stmt2 = $db->prepare("$requeteautre");
 
+        $stmt2 = $db->prepare("$requeteautre");
         $stmt2->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt2->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt2->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
         $stmt2->execute();
         $touites = $stmt2->fetchAll(PDO::FETCH_ASSOC);
         $res1 = '';
-        if ($touites != null) {
 
+        if ($touites != null) {
             list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res1, $note) = $this->extracted($touites, $res1);
         }
+
+        // Déplacement de la génération des liens de pagination ici
+
+
         return $res . $res1;
     }
+
+    private function getTotalUserWallTouitesCount($db, $userID)
+    {
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT t.ID_Touite) as total
+                          FROM touite t
+                          LEFT JOIN listetouiteutilisateur ltu ON t.ID_Touite = ltu.ID_Touite
+                          LEFT JOIN listetouitetag lt ON t.ID_Touite = lt.ID_Touite
+                          LEFT JOIN abonnement a ON ltu.ID_Utilisateur = a.ID_UtilisateurSuivi
+                          LEFT JOIN abonnementtag at ON lt.ID_Tag = at.ID_Tag
+                          WHERE a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID");
+        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['total'];
+    }
+
 
     /**
      * @param $touites
@@ -197,6 +254,9 @@ class DefaultAction extends Action
     {
 
         $db = ConnectionFactory::makeConnection();
+        $itemsPerPage = 10;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($page - 1) * $itemsPerPage;
 
         foreach ($touites as $data) {
             // Extraction des données du touite
@@ -214,7 +274,9 @@ class DefaultAction extends Action
             // Affichage des informations du touite
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
-            $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+            if ($imagePath != 'chemin_image_par_defaut.jpg') {
+                $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+            }
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <input type="hidden" name="userID" value="' . $userId . '">
@@ -240,6 +302,14 @@ class DefaultAction extends Action
                 }
             }
 
+
+        }
+        $userID=isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
+        $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+        $totalPages = ceil($totalTouites / $itemsPerPage);
+
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $res .= '<a href="?action=Default&page=' . $i . '">' . $i . '</a> ';
         }
 
 // ... (autres parties du code)

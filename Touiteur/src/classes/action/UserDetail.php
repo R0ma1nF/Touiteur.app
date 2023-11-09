@@ -24,14 +24,24 @@ class UserDetail extends Action
         $stmtUser = $db->prepare("SELECT nom, prénom FROM user WHERE id_utilisateur = ?");
         $stmtUser->execute([$userId]);
         $userData = $stmtUser->fetch();
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get the current page number
+        $totalTouites = $this->getTotalUserTouitesCount($db, $userId); // Get the total number of user touites
+        $itemsPerPage = 10; // Set the number of touites to display per page
+        $offset = ($page - 1) * $itemsPerPage; // Calculate the offset for the SQL query
 
         $stmt = $db->prepare("SELECT t.contenu, t.datePublication, u.nom, u.prénom, t.id_touite
-                    FROM touite t
-                    JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
-                    JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
-                    WHERE u.id_utilisateur = ?
-                    ORDER BY t.datePublication DESC");
-        $stmt->execute([$userId]);
+            FROM touite t
+            JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
+            JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
+            WHERE u.id_utilisateur = :userId
+            ORDER BY t.datePublication DESC
+            LIMIT :itemsPerPage OFFSET :offset");
+
+        $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
 
         $res = '';
         $res.= '<h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
@@ -74,7 +84,9 @@ class UserDetail extends Action
             // Affichage des informations du touite
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' .'</div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
-            $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+            if ($imagePath != 'chemin_image_par_defaut.jpg') {
+                $res .= '<img src="' . $imagePath . '" alt="Touite Image"><br>';
+            }
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
@@ -94,9 +106,26 @@ class UserDetail extends Action
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
         }
+        $totalPages = ceil($totalTouites / $itemsPerPage);
+
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $res .= '<a href="?action=userDetail&userID=' . $userId . '&page=' . $i . '">' . $i . '</a> ';
+        }
         return $res;
     }
 
+    private function getTotalUserTouitesCount($db, $userId)
+    {
+        $stmt = $db->prepare("SELECT COUNT(*) as total
+                         FROM touite t
+                         JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
+                         JOIN user u ON ltu.id_utilisateur = u.id_utilisateur
+                         WHERE u.id_utilisateur = ?");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['total'];
+    }
 
 
     /**

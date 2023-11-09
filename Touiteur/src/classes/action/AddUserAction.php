@@ -53,7 +53,7 @@ HTML;
         if ($password !== $password_confirm) {
             $message = "Les mots de passe ne correspondent pas. Veuillez réessayer.";
             $message .= "<br>";
-            $message .= '<a href="index.php?action=add-user">Retour à la page d\'inscription</a>';
+            $message .= '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
             return $message;
         }else {
             $auth = new Auth();

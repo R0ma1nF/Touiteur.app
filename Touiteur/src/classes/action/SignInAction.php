@@ -47,7 +47,7 @@ class SignInAction extends Action
                 } else {
                     $message = 'Authentification échouée. Vérifiez votre email et votre mot de passe.';
                     $message .= '<br>';
-                    $message .= '<a href="index.php?action=signin">Retour à la page de connexion</a>';
+                    $message .= '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
 
                     return $message;
                 }

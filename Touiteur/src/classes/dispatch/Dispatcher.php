@@ -39,7 +39,7 @@ class Dispatcher
                 'Connexion' => SignInAction::class,
                 'Accueil' => DefaultAction::class,
                 'Deconnexion' => DisconnectAction::class,
-                'Publier Touit' => TouiteAction::class,
+                'Publier-Touit' => TouiteAction::class,
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
                 'tagList' => TagAction::class,

@@ -9,7 +9,6 @@ class PublierTouite
     public static function touite(string $contenu, string $imagePath, $db): bool
     {
         $DatePublication = date('Y-m-d H:i:s');
-
         // Insérer d'abord le chemin du fichier image dans la table 'image'
         $stmt = $db->prepare("INSERT INTO image (CheminFichier) VALUES (?)");
         $stmt->execute([$imagePath]);

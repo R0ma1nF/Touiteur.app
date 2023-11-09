@@ -55,9 +55,11 @@ class narcissisticUserAction extends Action
         $followers = '';
 
         while ($data = $stmt->fetch()) {
+            $followers .= '<div>';
             $followers .= 'Nom: ' . $data['nom'] . '<br>';
             $followers .= 'Prénom: ' . $data['prénom'] . '<br>';
-            $followers .= '------------------------<br>';
+            $followers .= '</div>';
+
         }
 
         return $followers;
