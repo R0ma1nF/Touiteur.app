@@ -36,6 +36,7 @@ class TouiteAction extends Action
     public function handlePostRequest(): string
     {
         $contenu = filter_input(INPUT_POST, 'contenu', FILTER_SANITIZE_STRING);
+        $contenu = htmlspecialchars_decode($contenu);
 
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();;

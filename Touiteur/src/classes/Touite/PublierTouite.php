@@ -1,6 +1,8 @@
 <?php
 namespace iutnc\touiteur\Touite;
-use iutnc\touiteur\db\ConnectionFactory as ConnectionFactory;use iutnc\touiteur\exception\AuthException;
+use iutnc\touiteur\db\ConnectionFactory as ConnectionFactory;
+use iutnc\touiteur\exception\AuthException;
+use iutnc\touiteur\tag\SaveTag;
 
 class PublierTouite
 {
@@ -8,11 +10,17 @@ class PublierTouite
     {
         $DatePublication = date('Y-m-d H:i:s');
         $stmt = $db->prepare("INSERT INTO touite (contenu, DatePublication) VALUES (?, ?)");
+
         if ($stmt->execute([$contenu, $DatePublication])) {
+            $idTouite = $db->lastInsertId();
+            $SaveTag = new SaveTag();
+            $tags = $SaveTag->extractHashtags($contenu);
+            $SaveTag->saveTagsToDatabase($tags, $idTouite, $db);
             $query = "INSERT INTO listetouiteutilisateur (id_utilisateur, ID_Touite) VALUES (?, ?)";
             $stmt = $db->prepare($query);
             $userID = $_SESSION["user"]["id"];
-            $stmt->execute([$userID, $db->lastInsertId()]);
+            $stmt->execute([$userID, $idTouite]);
+
             // L'enregistrement a réussi
             return true;
         } else {
