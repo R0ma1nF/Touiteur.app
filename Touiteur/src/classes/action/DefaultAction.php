@@ -193,12 +193,12 @@ class DefaultAction extends Action
     public function extracted($touites, string $res): array
     {
         foreach ($touites as $data) {
-            $touiteID = $data['ID_Touite'];
-            $contenu = $this->transformTagsToLinks($data['Contenu']);
-            $datePublication = $data['DatePublication'];
-            $prenom = $data['prénom'];
-            $nom = $data['nom'];
-            $userId = $data['id_utilisateur'];
+            $touiteID = $data['ID_Touite'] ?? null;
+            $contenu = $this->transformTagsToLinks($data['Contenu']) ?? null;
+            $datePublication = $data['DatePublication'] ?? null;
+            $prenom = $data['prénom'] ?? null;
+            $nom = $data['nom'] ?? null;
+            $userId = $data['id_utilisateur'] ?? null;
 
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
@@ -209,7 +209,7 @@ class DefaultAction extends Action
         </form>';
 
             // Affiche la note actuelle du touite
-            $note = NoteTouite::getNoteTouite($touiteID);
+            $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
         }
         return array($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note);
