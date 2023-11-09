@@ -2,9 +2,11 @@
 
 namespace iutnc\touiteur\tag;
 
-class SaveTag {
+class SaveTag
+{
 
-    function saveTagsToDatabase($tags, $touiteId, $db) {
+    function saveTagsToDatabase($tags, $touiteId, $db)
+    {
         foreach ($tags as $tag) {
             $query = $db->prepare("SELECT ID_Tag FROM Tag WHERE Libelle = ?");
             $query->execute([$tag]);
@@ -23,22 +25,21 @@ class SaveTag {
         }
     }
 
-    function transformTagsToLinks($text) {
+    function transformTagsToLinks($text)
+    {
         $pattern = '/#(\w+)/';
-        $replace = '<a href="">#$1</a>';
-        $textAvecLiens = preg_replace($pattern, $replace, $text);
-
-        return $textAvecLiens;
+        $replace = '<a href="?action=tagListe&tag=$1">$1</a>';
+        return preg_replace($pattern, $replace, $text);
     }
 
-
-    function extractHashtags($text) {
+    function extractHashtags($text): array
+    {
         $hashtags = array();
         $pattern = '/#(\w+)/';
-        preg_match_all($pattern, $text, $togs);
+        preg_match_all($pattern, $text, $tabTag);
 
-        if (!empty($togs[1])) {
-            $hashtags = $togs[1];
+        if (!empty($tabTag[1])) {
+            $hashtags = $tabTag[1];
         }
 
         return $hashtags;
