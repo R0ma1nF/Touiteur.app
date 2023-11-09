@@ -11,7 +11,6 @@ class PublierTouite
         $DatePublication = date('Y-m-d H:i:s');
         $stmt = $db->prepare("INSERT INTO touite (contenu, DatePublication) VALUES (?, ?)");
         $SaveTag = new SaveTag();
-        $contenu = $SaveTag->transformTagsToLinks($contenu);
 
         if ($stmt->execute([$contenu, $DatePublication])) {
             $idTouite = $db->lastInsertId();
@@ -28,6 +27,7 @@ class PublierTouite
             throw new AuthException("L'enregistrement a échoué.");
         }
     }
+
 }
 
 ?>
