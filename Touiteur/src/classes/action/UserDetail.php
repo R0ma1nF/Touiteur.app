@@ -36,7 +36,7 @@ class UserDetail extends Action
             $datePublication = $data['datePublication'];
 
             $res .=  '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication .  '</div>' . '</a>';
-            $res .= '<form method="POST" action="?action=Default">
+            $res .= '<form method="POST" >
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>
         <button type="submit" name="dislikeTouite">Dislike</button>
