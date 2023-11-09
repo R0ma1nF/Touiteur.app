@@ -32,7 +32,7 @@ class TouiteAction extends Action
     <input type="text" name="contenu" required>
     <br>
     <label for="image">Image du touite</label>
-    <input type="file" name="image" accept="image/png, image/jpeg" required>
+    <input type="file" name="image" accept="image/png, image/jpeg" >
     <br>
     <button type="submit">Post</button>
 </form>
