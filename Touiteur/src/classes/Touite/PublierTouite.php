@@ -10,10 +10,11 @@ class PublierTouite
     {
         $DatePublication = date('Y-m-d H:i:s');
         $stmt = $db->prepare("INSERT INTO touite (contenu, DatePublication) VALUES (?, ?)");
+        $SaveTag = new SaveTag();
+        $contenu = $SaveTag->transformTagsToLinks($contenu);
 
         if ($stmt->execute([$contenu, $DatePublication])) {
             $idTouite = $db->lastInsertId();
-            $SaveTag = new SaveTag();
             $tags = $SaveTag->extractHashtags($contenu);
             $SaveTag->saveTagsToDatabase($tags, $idTouite, $db);
             $query = "INSERT INTO listetouiteutilisateur (id_utilisateur, ID_Touite) VALUES (?, ?)";
