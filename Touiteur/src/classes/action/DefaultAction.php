@@ -158,7 +158,7 @@ class DefaultAction extends Action
         $res = '';
         $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
         if ($touites != null) {
-            list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
+           list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
         }
         // Requête pour récupérer tous les touites de la base de données
         $stmt2 = $db->prepare("$requeteautre");
@@ -169,7 +169,7 @@ class DefaultAction extends Action
         $res1 = '';
         if ($touites != null) {
 
-        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res1);
+        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res1, $note) = $this->extracted($touites, $res1);
     }
         return $res . $res1;
     }
