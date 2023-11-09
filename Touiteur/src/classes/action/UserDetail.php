@@ -47,15 +47,15 @@ class UserDetail extends Action
             $res .= 'Note: ' . $note . '<br><br>';
         }
 
-        // Gestion des actions Like et Dislike en dehors de la boucle
-        if (isset($_POST['touiteID'])) {
-            $touiteID = (int) $_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+        // Gestion des actions Like et Dislike à l'intérieur de la boucle
+        if (isset($_POST['touiteID']) && $_POST['touiteID'] == $touiteID) {
             if (isset($_POST['likeTouite'])) {
                 $this->Likebutton($touiteID);
             } elseif (isset($_POST['dislikeTouite'])) {
                 $this->Dislikebutton($touiteID);
             }
         }
+
 
         return $res;
     }
