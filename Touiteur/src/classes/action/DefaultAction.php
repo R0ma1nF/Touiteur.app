@@ -128,10 +128,7 @@ class DefaultAction extends Action
     public function getUserWallTouites($userID)
     {
         $db = ConnectionFactory::makeConnection();
-
-
-        // Requête pour récupérer les touites des personnes et des tags suivis par l'utilisateur
-        $stmt1 = $db->prepare("select t.* , u.nom, u.prénom, u.id_utilisateur
+        $requetesuivi = "select t.* , u.nom, u.prénom, u.id_utilisateur
         from touite as t
         left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
         left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
@@ -139,17 +136,8 @@ class DefaultAction extends Action
         left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
         left join user as u on lu.ID_Utilisateur = u.id_utilisateur
         where a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID
-        order by t.DatePublication desc
-        ");
-
-        $stmt1->bindParam(':userID', $userID, PDO::PARAM_INT);
-        $stmt1->execute();
-        $res = '';
-        $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
-
-        // Requête pour récupérer tous les touites de la base de données
-        $stmt2 = $db->prepare("select t.* , u.nom, u.prénom, u.id_utilisateur
+        order by t.DatePublication desc";
+        $requeteautre = "select t.* , u.nom, u.prénom, u.id_utilisateur
         from touite as t
         left join listetouiteutilisateur as lu on t.ID_Touite = lu.ID_Touite
         left join listetouitetag as lt on t.ID_Touite = lt.ID_Touite
@@ -161,14 +149,28 @@ class DefaultAction extends Action
         left join abonnement as a on lu.ID_Utilisateur = a.ID_UtilisateurSuivi
         left join abonnementtag as at on lt.ID_Tag = at.ID_Tag
             where (a.ID_Utilisateur = :userID or at.ID_Utilisateur = :userID))
-            order by t.DatePublication desc");
+            order by t.DatePublication desc";
+        // Requête pour récupérer les touites des personnes et des tags suivis par l'utilisateur
+        $stmt1 = $db->prepare($requetesuivi);
+
+        $stmt1->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt1->execute();
+        $res = '';
+        $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+        if ($touites != null) {
+            list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
+        }
+        // Requête pour récupérer tous les touites de la base de données
+        $stmt2 = $db->prepare("$requeteautre");
 
         $stmt2->bindParam(':userID', $userID, PDO::PARAM_INT);
         $stmt2->execute();
         $touites = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-       $res1 = '';
-        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res1);
+        $res1 = '';
+        if ($touites != null) {
 
+        list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res1);
+    }
         return $res . $res1;
     }
 
@@ -192,6 +194,7 @@ class DefaultAction extends Action
      */
     public function extracted($touites, string $res): array
     {
+
         foreach ($touites as $data) {
             $touiteID = $data['ID_Touite'] ?? null;
             $contenu = $this->transformTagsToLinks($data['Contenu']) ?? null;
