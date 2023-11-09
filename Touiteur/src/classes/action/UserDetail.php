@@ -58,14 +58,23 @@ class UserDetail extends Action
         $touites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
+
         foreach ($touites as $data) {
             // Extraction des données du touite
             $touiteID = $data['id_touite'] ;
             $contenu = $data['contenu'] ;
             $datePublication = $data['datePublication'] ;
+
+            // Récupérer le chemin de l'image associée au touite depuis la base de données
+            $tmp = new DefaultAction();
+            $imagePath = $tmp->getImagePathForTouite($db, $touiteID);
+
+
+
             // Affichage des informations du touite
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' .'</div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
+            $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <button type="submit" name="likeTouite">Like</button>

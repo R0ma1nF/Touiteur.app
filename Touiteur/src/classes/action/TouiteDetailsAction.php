@@ -38,6 +38,13 @@ class TouiteDetailsAction extends Action
         $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
         $details .= 'Note : ' . NoteTouite::getNoteTouite($idTouite);
         $userId = $data['id_utilisateur'];
+
+        $touiteID = $data['id_touite'];
+        // Récupérer le chemin de l'image associée au touite depuis la base de données
+        $tmp = new DefaultAction();
+        $imagePath = $tmp->getImagePathForTouite($db, $touiteID);
+
+        $details .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
         $details.= '<h1>'.$data['prénom'].' '.$data['nom'].'</h1>';
         $details .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
         $details.='<input type="hidden" name="userID" value="' . $userId . '">';
