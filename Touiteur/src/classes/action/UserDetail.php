@@ -5,6 +5,7 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\Touite\NoteTouite;
+use iutnc\touiteur\follow\UserFollow;
 
 class UserDetail extends Action
 {
@@ -19,6 +20,10 @@ class UserDetail extends Action
 
     public function listeTouiteUser($db, $userId)
     {
+        $stmtUser = $db->prepare("SELECT nom, prénom FROM user WHERE id_utilisateur = ?");
+        $stmtUser->execute([$userId]);
+        $userData = $stmtUser->fetch();
+
         $stmt = $db->prepare("SELECT t.contenu, t.datePublication, u.nom, u.prénom, t.id_touite
                     FROM touite t
                     JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
@@ -26,11 +31,33 @@ class UserDetail extends Action
                     WHERE u.id_utilisateur = ?
                     ORDER BY t.datePublication DESC");
         $stmt->execute([$userId]);
+
         $res = '';
+        $res.= '<h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
+        $res .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
+        $res.='<input type="hidden" name="userID" value="' . $userId . '">';
+        $res .= '<button type="submit" name="followUser">Follow</button>';
+        $res .= '<button type="submit" name="unfollowUser">Unfollow</button>';
+        $res.='</form>';
+        if (isset($_POST['followUser'])) {
+            $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
+            if (!$followResult) {
+                $res.= '<div>Vous suivez déjà cet utilisateur.</div>';
+            }
+        } elseif (isset($_POST['unfollowUser'])) {
+            $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
+            if (!$unfollowResult) {
+                $res.= '<div>Vous ne suivez pas cet utilisateur.</div>';
+            }
+        }
+
+
+
+
+
         while ($data = $stmt->fetch()) {
             $touiteID = $data['id_touite'];
-            //affiche le nom et le prénom de l'utilisateur qui a publié le touite
-            $res .= $data['prénom'] . ' ' . $data['nom'] ;
+
             // Boutons Like et Dislike spécifiques au touite actuel
             $contenu = $data['contenu'];
             $datePublication = $data['datePublication'];
@@ -55,6 +82,8 @@ class UserDetail extends Action
                 $this->Dislikebutton($touiteID);
             }
         }
+
+
 
 
         return $res;
