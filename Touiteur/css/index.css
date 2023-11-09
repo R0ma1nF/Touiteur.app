@@ -40,5 +40,12 @@ form {
     justify-content: center;
 }
 
+div {
+    text-align: center;
+    border: 1px solid #ddd; /* Ajoute une bordure grise */
+    border-radius: 5px; /* Bords arrondis */
+    padding: 15px; /* Ajoute un peu d'espace à l'intérieur de la div */
+    margin: 10px; /* Ajoute une marge autour de la div */
+}
 
 
