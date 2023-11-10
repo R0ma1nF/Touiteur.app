@@ -2,13 +2,15 @@
 // DisconnectAction.php
 namespace iutnc\touiteur\action;
 
-class DisconnectAction
-{
-public function __invoke(): string
-{
-    $_SESSION = [];
-    session_write_close();
+use iutnc\touiteur\action\Action;
 
-return "You have been logged out. <a href=\"index.php\">Return to Home</a>";
-}
+class DisconnectAction extends Action
+{
+    public function execute(): string
+    {
+        $_SESSION = [];
+        session_write_close();
+
+        return "Vous étes deconnecter  <a href=\"index.php\">Retour A L\'Accueil</a>";
+    }
 }

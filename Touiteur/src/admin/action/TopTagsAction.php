@@ -1,8 +1,9 @@
 <?php
 
-namespace iutnc\BackOffice\action;
+namespace admin\touiteur\action;
 
-use iutnc\BackOffice\db\ConnectionFactory;
+use admin\touiteur\db\ConnectionFactory;
+use iutnc\touiteur\action\Action;
 use PDO;
 
 class TopTagsAction extends Action
