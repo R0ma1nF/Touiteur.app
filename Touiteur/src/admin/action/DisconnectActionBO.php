@@ -24,6 +24,6 @@ class DisconnectActionBO extends Action
         session_write_close();
 
         // Retourne un message indiquant que l'utilisateur est déconnecté
-        return "Vous êtes déconnecté. <a href=\"admin.php\">Retour à l'accueil</a>";
+        return "<h1> Vous étes deconnecter.  <a id='admin' href=\"admin.php\">Retour A L'Accueil</a> </h1>";
     }
 }
