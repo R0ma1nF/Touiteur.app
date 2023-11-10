@@ -68,7 +68,7 @@ class DefaultAction extends Action
 
 
 
-                $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
+                $res .= '<div class="touite" onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
                 $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
 
                 $res .= '<form method="POST" action="?action=Default">
@@ -304,12 +304,12 @@ class DefaultAction extends Action
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
 
             $res .= '<form method="POST" action="?action=Default">
-        <input type="hidden" name="touiteID" value="' . $touiteID . '">
-        <input type="hidden" name="userID" value="' . $userId . '">
-        <button type="submit" name="likeTouite">Like</button>
-        <button type="submit" name="dislikeTouite">Dislike</button>
-        <button type="submit" name="deleteTouite">Delete</button>
-    </form>';
+            <input type="hidden" name="touiteID" value="' . $touiteID . '">
+            <input type="hidden" name="userID" value="' . $userId . '">
+            <button type="submit" name="likeTouite">Like</button>
+            <button type="submit" name="dislikeTouite">Dislike</button>
+            <button type="submit" name="deleteTouite">Delete</button>
+            </form>';
 
             // Affiche la note actuelle du touite
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;

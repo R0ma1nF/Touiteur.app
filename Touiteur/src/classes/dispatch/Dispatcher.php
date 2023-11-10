@@ -46,7 +46,7 @@ class Dispatcher
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
                 'tagList' => TagAction::class,
-                'mesabonnés' => narcissisticUserAction::class,
+                'mes abonnés' => narcissisticUserAction::class,
                 'searchTag' => SearchTagAction::class,
                 // Add user actions as needed
             ],
@@ -59,7 +59,7 @@ class Dispatcher
                 'testdetail' => TouiteDetailsAction::class,
                 'userDetail' => UserDetail::class,
                 'tagList' => TagAction::class,
-                'mesabonnés' => narcissisticUserAction::class,
+                'mes abonnés' => narcissisticUserAction::class,
                 'searchTag' => SearchTagAction::class,
             ],
         ];
@@ -102,7 +102,7 @@ class Dispatcher
         $userRole = $_SESSION['user']['role'] ?? 'guest';
 
 // Render the search bar for tags
-        echo '<form method="GET" action="index.php">';
+        echo '<form class="nav-form" method="GET" action="index.php">';
         echo '<input type="hidden" name="action" value="searchTag">';
         echo '<input type="text" name="tag" placeholder="Search for a tag">';
         echo '<button type="submit">Search</button>';
@@ -111,7 +111,7 @@ class Dispatcher
 // Render the appropriate action links based on the user's role
         if (isset($this->actionMappings[$userRole]) && is_array($this->actionMappings[$userRole])) {
             foreach ($this->actionMappings[$userRole] as $actionName => $actionClass) {
-                if ($actionName !== 'testdetail' && $actionName !== 'userDetail' && $actionName !== 'tagList') {
+                if ($actionName !== 'testdetail' && $actionName !== 'userDetail' && $actionName !== 'tagList' && $actionName !== 'searchTag') {
                     echo '<form method="GET" action="index.php">';
                     echo '<input type="hidden" name="action" value="' . $actionName . '">';
                     echo '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
