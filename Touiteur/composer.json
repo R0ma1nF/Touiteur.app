@@ -3,7 +3,8 @@
   "description": "Projet de Touiteur",
   "autoload": {
     "psr-4": {
-      "iutnc\\touiteur\\": "src/classes"
+      "iutnc\\touiteur\\": "src/classes",
+      "admin\\touiteur\\": "src/admin",
     }
   },
   "require": {
