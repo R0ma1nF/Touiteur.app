@@ -44,7 +44,9 @@ class TouiteDetailsAction extends Action
         $tmp = new DefaultAction();
         $imagePath = $tmp->getImagePathForTouite($db, $touiteID);
 
-        $details .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
+        if ($imagePath != 'chemin_image_par_defaut.jpg'){
+            $details .= '<img src="' . $imagePath . '" alt="Image du touite" width="200" height="200">';
+        }
         $details.= '<h1>'.$data['prénom'].' '.$data['nom'].'</h1>';
         $details .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
         $details.='<input type="hidden" name="userID" value="' . $userId . '">';

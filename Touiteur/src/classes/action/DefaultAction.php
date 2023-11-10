@@ -66,14 +66,11 @@ class DefaultAction extends Action
                 $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
                 $datePublication = $data['datePublication'];
 
-                // Récupérer le chemin de l'image associée au touite depuis la base de données
-                $imagePath = $this->getImagePathForTouite($db, $touiteID);
+
 
                 $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
                 $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
-                if ($imagePath != 'chemin_image_par_defaut.jpg') {
-                    $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
-                }
+
                 $res .= '<form method="POST" action="?action=Default">
                 <input type="hidden" name="touiteID" value="' . $touiteID . '">
                 <button type="submit" name="likeTouite">Like</button>
@@ -268,15 +265,12 @@ class DefaultAction extends Action
             $nom = $data['nom'] ?? null;
             $userId = $data['id_utilisateur'] ?? null;
 
-            // Récupérer le chemin de l'image associée au touite depuis la base de données
-            $imagePath = $this->getImagePathForTouite($db, $touiteID);
+
 
             // Affichage des informations du touite
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
-            if ($imagePath != 'chemin_image_par_defaut.jpg') {
-                $res .= '<img src="' . $imagePath . '" alt="Touite Image">'; // Affiche l'image associée au touite
-            }
+
             $res .= '<form method="POST" action="?action=Default">
         <input type="hidden" name="touiteID" value="' . $touiteID . '">
         <input type="hidden" name="userID" value="' . $userId . '">

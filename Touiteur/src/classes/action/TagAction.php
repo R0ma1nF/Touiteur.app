@@ -2,12 +2,12 @@
 
 namespace iutnc\touiteur\action;
 
+use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\follow\tagfollow;
 use iutnc\touiteur\follow\UserFollow;
 use iutnc\touiteur\tag\SaveTag;
 use iutnc\touiteur\Touite\NoteTouite;
-use iutnc\touiteur\action\DefaultAction;
 
 class TagAction extends Action
 {
@@ -73,6 +73,7 @@ class TagAction extends Action
             $res .= $data['prénom'] . ' ' . $data['nom'];
             $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
             $datePublication = $data['datePublication'];
+
 
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
             $res .= '<form method="POST" action="?action=Default">
