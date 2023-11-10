@@ -1,2 +1,6 @@
 # Touiteur.app
-Voici notre git pour la SAE de développement web, étant donné qu'il est publique à la demande des consignes, n'hésitez pas à vous servir en copiant collant notre code :)
+
+Nom/Prenom     | ID GitHub
+Durand Quentin | QuentinDurand04
+Formet Romain  | R0ma1nF
+Vanneste Lucas | luskay595
