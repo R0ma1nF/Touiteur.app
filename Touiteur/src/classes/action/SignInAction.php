@@ -6,8 +6,16 @@ use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\db\User;
 use iutnc\touiteur\exception\AuthException;
 
+/**
+ * Classe représentant l'action de connexion (sign-in) d'un utilisateur.
+ */
 class SignInAction extends Action
 {
+    /**
+     * Exécute l'action en fonction de la méthode HTTP (GET ou POST).
+     *
+     * @return string Le résultat de l'exécution de l'action.
+     */
     public function execute(): string
     {
         if ($this->http_method === 'GET') {
@@ -17,6 +25,11 @@ class SignInAction extends Action
         }
     }
 
+    /**
+     * Gère une requête HTTP de type GET en affichant le formulaire de connexion.
+     *
+     * @return string Le formulaire HTML de connexion.
+     */
     public function handleGetRequest(): string
     {
         return '<form method="POST" >
@@ -30,6 +43,11 @@ class SignInAction extends Action
 </form>';
     }
 
+    /**
+     * Gère une requête HTTP de type POST en traitant les données de connexion.
+     *
+     * @return string Le résultat de la tentative d'authentification.
+     */
     public function handlePostRequest(): string
     {
         $userEmail = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);

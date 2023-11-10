@@ -6,6 +6,10 @@ use iutnc\touiteur\action\Action;
 
 class DisconnectAction extends Action
 {
+    /**
+     * methode appelée lors de l'execution de l'action
+     * @return string Le résultat de l'exécution de l'action.
+     */
     public function execute(): string
     {
         $_SESSION = [];

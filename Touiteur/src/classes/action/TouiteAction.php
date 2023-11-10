@@ -8,9 +8,17 @@ use iutnc\touiteur\db\User;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\Touite\PublierTouite;
 
+/**
+ * La classe TouiteAction gère les actions liées aux "touites" (messages courts).
+ */
 class TouiteAction extends Action
 {
 
+    /**
+     * Exécute l'action appropriée en fonction de la méthode HTTP (GET ou POST).
+     *
+     * @return string Le résultat de l'action.
+     */
     public function execute(): string
     {
         if ($this->http_method === 'GET') {
@@ -20,28 +28,36 @@ class TouiteAction extends Action
         }
     }
 
+    /**
+     * Gère une requête HTTP de type GET pour afficher le formulaire de publication de touite.
+     *
+     * @return string Le code HTML du formulaire.
+     */
     public function handleGetRequest(): string
     {
-        $res='';
+        $res = '';
         $errorMessages = isset($_GET['error']) ? $_GET['error'] : '';
         if (!empty($errorMessages)) {
             $res .= '<div style="color: red;">' . htmlspecialchars($errorMessages) . '</div>';
         }
-       $res .= '<form method="POST" enctype="multipart/form-data" >
-    <label for="contenu">Texte du touite</label>
-    <input type="text" name="contenu" required>
-    <br>
-    <label for="image">Image du touite</label>
-    <input type="file" name="image" accept="image/png, image/jpeg" >
-    <br>
-    <button type="submit">Post</button>
-</form>
+        $res .= '<form method="POST" enctype="multipart/form-data" >
+            <label for="contenu">Texte du touite</label>
+            <input type="text" name="contenu" required>
+            <br>
+            <label for="image">Image du touite</label>
+            <input type="file" name="image" accept="image/png, image/jpeg" >
+            <br>
+            <button type="submit">Post</button>
+        </form>';
 
-';
         return $res;
     }
 
-
+    /**
+     * Gère une requête HTTP de type POST pour publier un nouveau touite.
+     *
+     * @return string Le résultat de la publication du touite.
+     */
     public function handlePostRequest(): string
     {
         $contenu = filter_input(INPUT_POST, 'contenu', FILTER_SANITIZE_STRING);
@@ -80,6 +96,4 @@ class TouiteAction extends Action
             return "Le touite $contenu n'a pas pu être ajouté : " . $e->getMessage();
         }
     }
-
-
 }

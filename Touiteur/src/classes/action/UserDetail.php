@@ -8,27 +8,54 @@ use iutnc\touiteur\Touite\NoteTouite;
 use iutnc\touiteur\follow\UserFollow;
 use PDO;
 
+/**
+ * Classe représentant l'action de détail d'utilisateur.
+ */
 class UserDetail extends Action
 {
+    /**
+     * Exécute l'action et renvoie une chaîne de caractères représentant la vue.
+     *
+     * @return string Vue de la page utilisateur détaillée.
+     */
     public function execute(): string
     {
+        // Connexion à la base de données
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
+
+        // Récupération de l'ID de l'utilisateur à afficher
         $userId = isset($_GET['userID']) ? (int)$_GET['userID'] : 0;
+
+        // Récupération de la liste des touites de l'utilisateur
         $liste = $this->listeTouiteUser($db, $userId);
+
+        // Construction de la vue
         return 'Bienvenue sur Touiter' . '<br><br>' . $liste;
     }
 
+    /**
+     * Récupère la liste des touites d'un utilisateur donné.
+     *
+     * @param PDO   $db     Connexion à la base de données.
+     * @param int   $userId ID de l'utilisateur.
+     *
+     * @return string Chaîne représentant la vue des touites de l'utilisateur.
+     */
     public function listeTouiteUser($db, $userId)
     {
+        // Requête pour récupérer les informations de l'utilisateur
         $stmtUser = $db->prepare("SELECT nom, prénom FROM user WHERE id_utilisateur = ?");
         $stmtUser->execute([$userId]);
         $userData = $stmtUser->fetch();
+
+        // Pagination des touites
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $totalTouites = $this->getTotalUserTouitesCount($db, $userId);
         $itemsPerPage = 10;
         $offset = ($page - 1) * $itemsPerPage;
 
+        // Requête pour récupérer les touites de l'utilisateur avec pagination
         $stmt = $db->prepare("SELECT t.contenu, t.datePublication, u.nom, u.prénom, t.id_touite
             FROM touite t
             JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
@@ -42,9 +69,9 @@ class UserDetail extends Action
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-
+        // Construction de la vue des touites
         $res = '';
-        $res.= '<h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
+        $res .= '<h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
         $res .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
         $res.='<input type="hidden" name="userID" value="' . $userId . '">';
         $res .= '<button type="submit" name="followUser">Follow</button>';
@@ -119,8 +146,17 @@ class UserDetail extends Action
         return $res;
     }
 
+    /**
+     * Récupère le nombre total de touites d'un utilisateur.
+     *
+     * @param PDO   $db     Connexion à la base de données.
+     * @param int   $userId ID de l'utilisateur.
+     *
+     * @return int Nombre total de touites de l'utilisateur.
+     */
     private function getTotalUserTouitesCount($db, $userId)
     {
+        // Requête pour récupérer le nombre total de touites de l'utilisateur
         $stmt = $db->prepare("SELECT COUNT(*) as total
                          FROM touite t
                          JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
@@ -133,7 +169,11 @@ class UserDetail extends Action
     }
 
 
-
+    /**
+     * @param $touiteID int L'ID du touite à liker.
+     * @return void
+     * @throws AuthException Si l'utilisateur n'est pas connecté.
+     */
     public function Likebutton($touiteID) {
         $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
         if ($userID == null) {
@@ -149,6 +189,12 @@ class UserDetail extends Action
         }
         NoteTouite::likeTouite($userID, $touiteID);
     }
+
+    /**
+     * @param $touiteID int L'ID du touite à disliker.
+     * @return void
+     * @throws AuthException Si l'utilisateur n'est pas connecté.
+     */
     public function Dislikebutton($touiteID) {
         $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
 

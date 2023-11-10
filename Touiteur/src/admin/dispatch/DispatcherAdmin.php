@@ -1,6 +1,7 @@
 <?php
 
 namespace admin\touiteur\dispatch;
+
 use admin\touiteur\action\DefaultActionBO;
 use admin\touiteur\action\InfluenceurAction;
 use admin\touiteur\action\SignInActionBO;
@@ -8,11 +9,24 @@ use admin\touiteur\action\TopTagsAction;
 use admin\touiteur\action\DisconnectActionBO;
 use admin\touiteur\exception\AuthException;
 
+/**
+ * Classe DispatcherAdmin gérant la logique de dispatching des actions dans l'interface administrateur.
+ */
 class DispatcherAdmin
 {
+    /**
+     * @var string $action Le nom de l'action en cours.
+     */
     private string $action;
+
+    /**
+     * @var array $actionMappings Les mappings d'actions en fonction des rôles utilisateur.
+     */
     private array $actionMappings;
 
+    /**
+     * Constructeur de la classe DispatcherAdmin.
+     */
     public function __construct()
     {
         $action = $_GET['action'] ?? 'default';
@@ -31,6 +45,9 @@ class DispatcherAdmin
         ];
     }
 
+    /**
+     * Exécute l'action en cours en fonction du rôle de l'utilisateur.
+     */
     public function run(): void
     {
         $userRole = $_SESSION['user']['role'] ?? $_SESSION['user']['role'] = '10';
@@ -47,7 +64,11 @@ class DispatcherAdmin
         $this->renderPage($pageContent);
     }
 
-
+    /**
+     * Affiche la page avec le contenu généré.
+     *
+     * @param string $html Le contenu HTML à afficher.
+     */
     public function renderPage(string $html): void
     {
         $res = '';
@@ -66,10 +87,10 @@ class DispatcherAdmin
 
         if (isset($this->actionMappings[$userRole]) && is_array($this->actionMappings[$userRole])) {
             foreach ($this->actionMappings[$userRole] as $actionName => $actionClass) {
-                   $res .= '<form method="GET" action="admin.php">';
-                   $res .= '<input type="hidden" name="action" value="' . $actionName . '">';
-                   $res .= '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
-                   $res .= '</form>';
+                $res .= '<form method="GET" action="admin.php">';
+                $res .= '<input type="hidden" name="action" value="' . $actionName . '">';
+                $res .= '<button type="submit">' . ucwords(str_replace("-", " ", $actionName)) . '</button>';
+                $res .= '</form>';
             }
         }
 
@@ -81,5 +102,4 @@ class DispatcherAdmin
         $res .= '</html>';
         echo $res;
     }
-
 }

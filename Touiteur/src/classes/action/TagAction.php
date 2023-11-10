@@ -9,13 +9,21 @@ use iutnc\touiteur\follow\UserFollow;
 use iutnc\touiteur\tag\SaveTag;
 use iutnc\touiteur\Touite\NoteTouite;
 
+/**
+ * Classe représentant une action liée à un tag dans l'application Touiteur.
+ */
 class TagAction extends Action
 {
     /**
-     * @throws \Exception
+     * Exécute l'action et renvoie le résultat.
+     *
+     * @throws \Exception En cas d'erreur.
+     *
+     * @return string Résultat de l'action.
      */
     public function execute(): string
     {
+        // Vérifie si le paramètre 'tag' est présent dans la requête.
         if (isset($_GET['tag'])) {
             $tag = $_GET['tag'];
             $db = ConnectionFactory::setConfig('db.config.ini');
@@ -27,8 +35,17 @@ class TagAction extends Action
         }
     }
 
+    /**
+     * Récupère la liste des touites associés à un tag donné.
+     *
+     * @param mixed $db Instance de connexion à la base de données.
+     * @param string $tag Le tag pour lequel récupérer la liste des touites.
+     *
+     * @return string Liste des touites associés au tag spécifié.
+     */
     public function listeTouiteByTag($db, $tag): string
     {
+        // Prépare et exécute la requête SQL pour récupérer les touites liés au tag.
         $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom
             FROM touite t
             JOIN listetouiteutilisateur ltu ON t.id_touite = ltu.ID_Touite
@@ -47,15 +64,20 @@ class TagAction extends Action
         $res .= '<button type="submit" name="followTag">Follow</button>';
         $res .= '<button type="submit" name="unfollowTag">Unfollow</button>';
         $res .= '</form>';
+
+        // Récupère l'ID du tag pour les opérations de suivi et d'arrêt de suivi.
         $stmtidtag = $db->prepare("SELECT ID_Tag FROM tag WHERE Libelle = :tag");
         $stmtidtag->bindValue(':tag', $tag, \PDO::PARAM_STR);
         $stmtidtag->execute();
         $data = $stmtidtag->fetch();
         $tag = $data['ID_Tag'];
         $userrole = $_SESSION['user']['role'];
+
+        // Vérifie le rôle de l'utilisateur pour afficher les actions de suivi de tag.
         if ($userrole == '10') {
             $res .= "vous devez être connecté pour pouvoir suivre un tag";
         } else {
+            // Gère les actions de suivi et d'arrêt de suivi du tag.
             if (isset($_POST['followTag'])) {
                 $followResult = tagfollow::followTag($_SESSION['user']['id'], $tag);
                 if (!$followResult) {
@@ -70,13 +92,14 @@ class TagAction extends Action
                 }
             }
         }
+
+        // Parcourt les résultats de la requête et construit le résultat à renvoyer.
         while ($data = $stmt->fetch()) {
             $SaveTag = new SaveTag();
             $touiteID = $data['id_touite'];
             $res .= $data['prénom'] . ' ' . $data['nom'];
             $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
             $datePublication = $data['datePublication'];
-
 
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
             $res .= '<form method="POST" action="?action=Default">

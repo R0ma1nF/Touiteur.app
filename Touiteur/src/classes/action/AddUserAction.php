@@ -5,7 +5,16 @@ use iutnc\touiteur\db\ConnectionFactory as ConnectionFactory;
 use iutnc\touiteur\auth\Auth;
 use iutnc\touiteur\exception\AuthException;
 
+/**
+ * Classe représentant l'action d'ajout d'un utilisateur.
+ */
 class AddUserAction extends Action {
+
+    /**
+     * Exécute l'action en fonction de la méthode HTTP.
+     *
+     * @return string Résultat de l'action.
+     */
     public function execute(): string {
         if ($this->http_method === 'GET') {
             return $this->handleGetRequest();
@@ -14,17 +23,31 @@ class AddUserAction extends Action {
         }
         return '';
     }
+
+    /**
+     * Gère les requêtes GET pour afficher le formulaire d'inscription.
+     *
+     * @return string Formulaire d'inscription HTML.
+     */
     public function handleGetRequest(): string {
-        // Code pour gérer les requêtes GET ici
         return $this->getRegistrationForm();
     }
 
+    /**
+     * Gère les requêtes POST pour traiter l'inscription de l'utilisateur.
+     *
+     * @return string Résultat du traitement de l'inscription.
+     */
     public function handlePostRequest(): string {
-        // Code pour gérer les requêtes POST ici
         return $this->processRegistration();
     }
-  private  function getRegistrationForm(): string
-  {
+
+    /**
+     * Génère le formulaire d'inscription HTML.
+     *
+     * @return string Formulaire d'inscription HTML.
+     */
+    private function getRegistrationForm(): string {
         return <<<HTML
     <form method="POST" >
         <label for="name">Nom:</label>
@@ -41,21 +64,28 @@ class AddUserAction extends Action {
     </form>
 HTML;
     }
-    private function processRegistration(): string
-    {
+
+    /**
+     * Traite la soumission du formulaire d'inscription.
+     *
+     * @return string Résultat du traitement de l'inscription.
+     */
+    private function processRegistration(): string {
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $firstname = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
         $password_confirm = filter_input(INPUT_POST, 'password_confirm', FILTER_SANITIZE_STRING);
+
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
+
         if ($password !== $password_confirm) {
             $message = "Les mots de passe ne correspondent pas. Veuillez réessayer.";
             $message .= "<br>";
             $message .= '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
             return $message;
-        }else {
+        } else {
             $auth = new Auth();
             try {
                 $auth->register($name, $firstname, $email, $password, $db);
@@ -64,8 +94,5 @@ HTML;
                 return "L'utilisateur $email n'a pas pu être ajouté : " . $e->getMessage();
             }
         }
-
     }
-
-
 }

@@ -1,13 +1,26 @@
 <?php
 
 namespace admin\touiteur\action;
+
 use admin\touiteur\db\ConnectionFactory;
 use admin\touiteur\db\User;
 use admin\touiteur\auth\Auth;
 use iutnc\touiteur\action\Action;
 
+/**
+ * Classe SignInActionBO
+ *
+ * Cette classe gère l'action de connexion de l'administrateur.
+ *
+ * @package admin\touiteur\action
+ */
 class SignInActionBO extends Action
 {
+    /**
+     * Exécute l'action en fonction de la méthode HTTP utilisée.
+     *
+     * @return string Résultat de l'exécution de l'action.
+     */
     public function execute(): string
     {
         if ($this->http_method === 'GET') {
@@ -17,6 +30,11 @@ class SignInActionBO extends Action
         }
     }
 
+    /**
+     * Gère une requête HTTP de type GET en affichant le formulaire de connexion.
+     *
+     * @return string Le formulaire HTML de connexion.
+     */
     public function handleGetRequest(): string
     {
         return '<form method="POST" >
@@ -30,6 +48,11 @@ class SignInActionBO extends Action
 </form>';
     }
 
+    /**
+     * Gère une requête HTTP de type POST en traitant les données du formulaire de connexion.
+     *
+     * @return string Résultat de l'authentification.
+     */
     public function handlePostRequest(): string
     {
         $userEmail = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
