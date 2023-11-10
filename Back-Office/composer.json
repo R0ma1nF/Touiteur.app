@@ -1,0 +1,12 @@
+{
+  "name": "iutnc/backoffice",
+  "description": "Back-Office du Projet de Touiteur",
+  "autoload": {
+    "psr-4": {
+      "iutnc\\BackOffice\\": "src/classes"
+    }
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
