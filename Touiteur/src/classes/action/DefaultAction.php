@@ -166,80 +166,112 @@ class DefaultAction extends Action
         $itemsPerPage = 10;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $offset = ($page - 1) * $itemsPerPage;
+
         $requetesuivi = "SELECT t.*, u.nom, u.prénom, u.id_utilisateur
+            FROM touite AS t
+            LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
+            LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
+            LEFT JOIN abonnement AS a ON lu.ID_Utilisateur = a.ID_UtilisateurSuivi
+            LEFT JOIN abonnementtag AS at ON lt.ID_Tag = at.ID_Tag
+            LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
+            WHERE a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID
+            ORDER BY t.DatePublication DESC
+            LIMIT :offset, :itemsPerPage";
+
+        $requeteautre = "SELECT t.*, u.nom, u.prénom, u.id_utilisateur
+            FROM touite AS t
+            LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
+            LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
+            LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
+            WHERE t.ID_Touite NOT IN (
+                SELECT t.ID_Touite
                 FROM touite AS t
                 LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
                 LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
                 LEFT JOIN abonnement AS a ON lu.ID_Utilisateur = a.ID_UtilisateurSuivi
                 LEFT JOIN abonnementtag AS at ON lt.ID_Tag = at.ID_Tag
-                LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
-                WHERE a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID
-                ORDER BY t.DatePublication DESC
-                LIMIT :offset, :itemsPerPage";
-
-        $requeteautre = "SELECT t.*, u.nom, u.prénom, u.id_utilisateur
-                FROM touite AS t
-                LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
-                LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
-                LEFT JOIN user AS u ON lu.ID_Utilisateur = u.id_utilisateur
-                WHERE t.ID_Touite NOT IN (
-                    SELECT t.ID_Touite
-                    FROM touite AS t
-                    LEFT JOIN listetouiteutilisateur AS lu ON t.ID_Touite = lu.ID_Touite
-                    LEFT JOIN listetouitetag AS lt ON t.ID_Touite = lt.ID_Touite
-                    LEFT JOIN abonnement AS a ON lu.ID_Utilisateur = a.ID_UtilisateurSuivi
-                    LEFT JOIN abonnementtag AS at ON lt.ID_Tag = at.ID_Tag
-                    WHERE (a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID)
-                )
-                ORDER BY t.DatePublication DESC
-                LIMIT :offset, :itemsPerPage";
+                WHERE (a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID)
+            )
+            ORDER BY t.DatePublication DESC
+            LIMIT :offset, :itemsPerPage";
 
         $stmt1 = $db->prepare($requetesuivi);
         $stmt1->bindParam(':userID', $userID, PDO::PARAM_INT);
         $stmt1->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt1->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
         $stmt1->execute();
-        $res = '';
-
-        $touites = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-
-        if ($touites != null) {
-            list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note) = $this->extracted($touites, $res);
-        }
+        $touitesSuivi = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
         $stmt2 = $db->prepare("$requeteautre");
         $stmt2->bindParam(':userID', $userID, PDO::PARAM_INT);
         $stmt2->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt2->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
         $stmt2->execute();
-        $touites = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-        $res1 = '';
+        $touitesAutre = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($touites != null) {
-            list($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res1, $note) = $this->extracted($touites, $res1);
+        $res = $this->generateTouiteHTML($touitesSuivi);
+        $res .= $this->generateTouiteHTML($touitesAutre);
+
+        // Génération des liens de pagination
+        $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+        $totalPages = ceil($totalTouites / $itemsPerPage);
+
+        for ($i = 1; $i <= $totalPages; $i++) {
+            $res .= '<a href="?action=Default&page=' . $i . '">' . $i . '</a> ';
         }
 
-        // Déplacement de la génération des liens de pagination ici
-
-
-        return $res . $res1;
+        return $res;
     }
 
-    private function getTotalUserWallTouitesCount($db, $userID)
+    private function generateTouiteHTML($touites)
     {
-        $stmt = $db->prepare("SELECT COUNT(DISTINCT t.ID_Touite) as total
-                          FROM touite t
-                          LEFT JOIN listetouiteutilisateur ltu ON t.ID_Touite = ltu.ID_Touite
-                          LEFT JOIN listetouitetag lt ON t.ID_Touite = lt.ID_Touite
-                          LEFT JOIN abonnement a ON ltu.ID_Utilisateur = a.ID_UtilisateurSuivi
-                          LEFT JOIN abonnementtag at ON lt.ID_Tag = at.ID_Tag
-                          WHERE a.ID_Utilisateur = :userID OR at.ID_Utilisateur = :userID");
-        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = '';
 
-        return $result['total'];
+        foreach ($touites as $data) {
+            // Extraction des données du touite
+            $touiteID = $data['ID_Touite'] ?? null;
+            $SaveTag = new SaveTag();
+            $contenu = $SaveTag->transformTagsToLinks($data['Contenu']) ?? null;
+            $datePublication = $data['DatePublication'] ?? null;
+            $prenom = $data['prénom'] ?? null;
+            $nom = $data['nom'] ?? null;
+            $userId = $data['id_utilisateur'] ?? null;
+
+            // Affichage des informations du touite
+            $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
+            $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
+
+            $res .= '<form method="POST" action="?action=Default">
+            <input type="hidden" name="touiteID" value="' . $touiteID . '">
+            <input type="hidden" name="userID" value="' . $userId . '">
+            <button type="submit" name="likeTouite">Like</button>
+            <button type="submit" name="dislikeTouite">Dislike</button>
+            <button type="submit" name="deleteTouite">Delete</button>
+        </form>';
+
+            // Affiche la note actuelle du touite
+            $note = NoteTouite::getNoteTouite($touiteID) ?? null;
+            $res .= 'Note: ' . $note . '<br><br>';
+
+            if (isset($_POST['touiteID'])) {
+                $touiteID = (int)$_POST['touiteID'];
+                $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
+
+                if (isset($_POST['likeTouite'])) {
+                    $this->Likebutton($touiteID, $userID);
+                } elseif (isset($_POST['dislikeTouite'])) {
+                    $this->Dislikebutton($touiteID, $userID);
+                } elseif (isset($_POST['deleteTouite'])) {
+                    $res .= SupprimerTouite::supprimerTouite($userID, $touiteID);
+                }
+            }
+        }
+
+        return $res;
     }
+
+
+
 
 
     /**
