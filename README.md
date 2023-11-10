@@ -3,16 +3,16 @@
 ### Nom/Prenom     | ID GitHub
 #### Durand Quentin | QuentinDurand04
 
-Fonctionnalité réalisé : 2 | 4 | 8 | 10 | 16 | 17
+Fonctionnalité réalisée : 2 | 4 | 8 | 10 | 16 | 17
 
 #### Formet Romain  | R0ma1nF
-Fonctionnalité réalisé : 1 | 5 | 11 | 14 | css
+Fonctionnalité réalisée : 1 | 5 | 11 | 14 | css
 
 #### Vanneste Lucas | luskay595
-Fonctionnalité réalisé : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
+Fonctionnalité réalisée : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
 
 #### Malavasi Valentin | vmalavasi
-Fonctionnalité réalisé : Hospitalisé et n'a pas pu réaliser le projet
+Fonctionnalité réalisée : Hospitalisé et n'a pas pu réaliser le projet
 
 # Liste des fonctionnalités :
 
@@ -83,8 +83,7 @@ administrateurs de réaliser les deux fonctionnalités précédentes.
 ### administrateur1@gmail.com | administrateur1
 
 # url de l'application Touiteur :
-https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur/
+https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur.app/
 
 # url de l'application BackOffice :
-https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur/admin.php
-
+https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur.app/admin.php
