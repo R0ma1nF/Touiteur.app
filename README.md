@@ -3,16 +3,16 @@
 ### Nom/Prenom     | ID GitHub
 #### Durand Quentin | QuentinDurand04
 
-Fonctionnalité réalisée : 2 | 4 | 8 | 10 | 16 | 17
+Fonctionnalité réalisé : 2 | 4 | 8 | 10 | 16 | 17
 
 #### Formet Romain  | R0ma1nF
-Fonctionnalité réalisée : 1 | 5 | 11 | 14 | css
+Fonctionnalité réalisé : 1 | 5 | 11 | 14 | css | compte rendu base de données
 
 #### Vanneste Lucas | luskay595
-Fonctionnalité réalisée : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
+Fonctionnalité réalisé : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
 
 #### Malavasi Valentin | vmalavasi
-Fonctionnalité réalisée : Hospitalisé et n'a pas pu réaliser le projet
+Fonctionnalité réalisé : Hospitalisé et n'a pas pu réaliser le projet
 
 # Liste des fonctionnalités :
 
