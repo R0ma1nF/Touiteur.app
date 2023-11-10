@@ -31,7 +31,6 @@ class InfluenceurAction extends Action
 
     private function Influenceur($db)
     {
-        // Requête SQL pour obtenir la liste des utilisateurs les plus influents
         $stmt = $db->prepare("SELECT u.id_utilisateur, u.nom, u.prénom, u.email, COUNT(a.id_abonnement) AS influenceur
                 FROM user u
                 LEFT JOIN abonnement a ON u.id_utilisateur = a.id_utilisateurSuivi

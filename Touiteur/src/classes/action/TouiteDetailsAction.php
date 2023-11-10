@@ -12,7 +12,7 @@ class TouiteDetailsAction extends Action
     {
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
-        $touiteID = isset($_GET['touiteID']) ? (int)$_GET['touiteID'] : 0; // Get the touiteID from the query parameter
+        $touiteID = isset($_GET['touiteID']) ? (int)$_GET['touiteID'] : 0;
         $liste = $this->touiteDetail($db, $touiteID);
         return 'Bienvenue sur Touiter' . '<br>' . $liste;
     }
@@ -28,8 +28,7 @@ class TouiteDetailsAction extends Action
         $stmt->execute([$idTouite]);
 
 
-        $details = ''; // A string to store the details of the touite
-
+        $details = '';
         $data = $stmt->fetch();
         $details .= 'Contenu: ' . $data['contenu'] . "<br>";
         $details .= 'Date de Publication: ' . $data['datePublication'] . "<br>";
@@ -40,7 +39,6 @@ class TouiteDetailsAction extends Action
         $userId = $data['id_utilisateur'];
 
         $touiteID = $data['id_touite'];
-        // Récupérer le chemin de l'image associée au touite depuis la base de données
         $tmp = new DefaultAction();
         $imagePath = $tmp->getImagePathForTouite($db, $touiteID);
 
@@ -74,6 +72,6 @@ class TouiteDetailsAction extends Action
             }
         }
 
-        return $details; // Returns a single string containing the details of the touite
+        return $details;
     }
 }

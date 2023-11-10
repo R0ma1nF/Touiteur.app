@@ -12,9 +12,6 @@ use PDO;
 class DefaultAction extends Action
 {
 
-    /**
-     * @throws \Exception
-     */
     public function execute(): string
     {
         $db = ConnectionFactory::setConfig('db.config.ini');
@@ -24,15 +21,7 @@ class DefaultAction extends Action
         return '<h1> Bienvenue sur Touiter </h1>' . '<br>' . '<div class="touite-list">' . $liste . '</div>';
     }
 
-    /**
-     * @throws \Exception
-     */
-    /**
-     * @throws \Exception
-     */
-    /**
-     * @throws \Exception
-     */
+
     public function listeTouite($db)
     {
         $roleuser = $_SESSION["user"]["role"];
@@ -40,9 +29,9 @@ class DefaultAction extends Action
             $liste = $this->getUserWallTouites($_SESSION['user']['id']);
             return $liste;
         } else {
-            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get the current page number
-            $itemsPerPage = 10; // Set the number of touites to display per page
-            $offset = ($page - 1) * $itemsPerPage; // Calculate the offset for the SQL query
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $itemsPerPage = 10;
+            $offset = ($page - 1) * $itemsPerPage;
 
             $stmt = $db->prepare("SELECT t.id_touite, t.contenu, t.datePublication, u.nom, u.prénom, u.id_utilisateur
                     FROM touite t
@@ -58,10 +47,10 @@ class DefaultAction extends Action
             while ($data = $stmt->fetch()) {
                 $touiteID = $data['id_touite'];
                 $userId = $data["id_utilisateur"];
-                //affiche le nom et le prénom de l'utilisateur qui a publié le touite
+
                 $prenom = $data['prénom'];
                 $nom = $data['nom'];
-                // Boutons Like et Dislike spécifiques au touite actuel
+
                 $SaveTag = new SaveTag();
                 $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
                 $datePublication = $data['datePublication'];
@@ -76,14 +65,13 @@ class DefaultAction extends Action
                 <button type="submit" name="dislikeTouite">Dislike</button>
                 </form></div>';
 
-                // Affiche la note actuelle du touite
                 $note = NoteTouite::getNoteTouite($touiteID);
                 $res .= 'Note: ' . $note . '<br><br>';
             }
 
 
             if (isset($_POST['touiteID'])) {
-                $touiteID = (int)$_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+                $touiteID = (int)$_POST['touiteID'];
                 $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
 
                 if (isset($_POST['likeTouite'])) {
@@ -94,7 +82,7 @@ class DefaultAction extends Action
                     $res .= SupprimerTouite::supprimerTouite($userID, $touiteID);
                 }
             }
-            $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+            $totalTouites = $this->getTotalTouitesCount($db);
             $totalPages = ceil($totalTouites / $itemsPerPage);
 
             for ($i = 1; $i <= $totalPages; $i++) {
@@ -122,39 +110,36 @@ class DefaultAction extends Action
     {
         $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
         if ($userID == null) {
-            // Redirigez l'utilisateur vers la page de connexion s'il n'est pas connecté (ou vers la page d'inscription s'il n'a pas de compte)
-            //en lui proposant de se connecter ou de s'inscrire pour pouvoir liker un touite et afficher un message d'erreur
-            echo '<h2>Erreur</h2>';
-            echo "Vous devez être connecté pour pouvoir liker un touite.";
-            echo '<br>';
-            echo '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
-            echo '<br>';
-            echo '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+            $res = '';
+             $res .= '<h2>Erreur</h2>';
+            $res .=  "Vous devez être connecté pour pouvoir liker un touite.";
+            $res .=  '<br>';
+            $res .=  '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
+            $res .=  '<br>';
+            $res .=  '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+            echo $res;
             exit();
         }
         // Bouton Like cliqué, ajoutez ici la logique pour gérer le Like
         NoteTouite::likeTouite($userID, $touiteID);
     }
 
-    /**
-     * @throws AuthException
-     */
+
     public function Dislikebutton($touiteID)
     {
         $userID = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
 
         if ($userID == null) {
-            // Redirigez l'utilisateur vers la page de connexion s'il n'est pas connecté (ou vers la page d'inscription s'il n'a pas de compte)
-            //en lui proposant de se connecter ou de s'inscrire pour pouvoir liker un touite et afficher un message d'erreur
-            echo '<h2>Erreur</h2>';
-            echo "Vous devez être connecté pour pouvoir disliker un touite.";
-            echo '<br>';
-            echo '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
-            echo '<br>';
-            echo '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+           $res = '';
+           $res .= '<h2>Erreur</h2>';
+            $res .= "Vous devez être connecté pour pouvoir disliker un touite.";
+            $res .= '<br>';
+            $res .= '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
+            $res .= '<br>';
+            $res .= '<a href="index.php?action=Inscription">Retour à la page d\'inscription</a>';
+            echo $res;
             exit();
         }
-        // Bouton Dislike cliqué, ajoutez ici la logique pour gérer le Dislike
         NoteTouite::dislikeTouite($userID, $touiteID);
     }
 
@@ -211,8 +196,7 @@ class DefaultAction extends Action
         $res = $this->generateTouiteHTML($touitesSuivi);
         $res .= $this->generateTouiteHTML($touitesAutre);
 
-        // Génération des liens de pagination
-        $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+        $totalTouites = $this->getTotalTouitesCount($db);
         $totalPages = ceil($totalTouites / $itemsPerPage);
 
         for ($i = 1; $i <= $totalPages; $i++) {
@@ -227,7 +211,6 @@ class DefaultAction extends Action
         $res = '';
 
         foreach ($touites as $data) {
-            // Extraction des données du touite
             $touiteID = $data['ID_Touite'] ?? null;
             $SaveTag = new SaveTag();
             $contenu = $SaveTag->transformTagsToLinks($data['Contenu']) ?? null;
@@ -236,7 +219,7 @@ class DefaultAction extends Action
             $nom = $data['nom'] ?? null;
             $userId = $data['id_utilisateur'] ?? null;
 
-            // Affichage des informations du touite
+
             $res .= '<div class="touite">';
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '<br><br>' .
@@ -249,7 +232,6 @@ class DefaultAction extends Action
             </form> ' .'</div></div>';
 
 
-            // Affiche la note actuelle du touite
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
 
@@ -272,13 +254,6 @@ class DefaultAction extends Action
 
 
 
-
-
-    /**
-     * @param $touites
-     * @param string $res
-     * @return array
-     */
     public function extracted($touites, string $res): array
     {
 
@@ -297,9 +272,6 @@ class DefaultAction extends Action
             $nom = $data['nom'] ?? null;
             $userId = $data['id_utilisateur'] ?? null;
 
-
-
-            // Affichage des informations du touite
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
 
@@ -311,12 +283,11 @@ class DefaultAction extends Action
             <button type="submit" name="deleteTouite">Delete</button>
             </form>';
 
-            // Affiche la note actuelle du touite
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
             $res .= 'Note: ' . $note . '<br><br>';
 
             if (isset($_POST['touiteID'])) {
-                $touiteID = (int)$_POST['touiteID']; // Assurez-vous qu'il s'agit d'un entier
+                $touiteID = (int)$_POST['touiteID'];
                 $userID = isset($_POST['userID']) ? (int)$_POST['userID'] : 0;
 
                 if (isset($_POST['likeTouite'])) {
@@ -331,14 +302,13 @@ class DefaultAction extends Action
 
         }
         $userID=isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : null;
-        $totalTouites = $this->getTotalTouitesCount($db); // Get the total number of touites
+        $totalTouites = $this->getTotalTouitesCount($db);
         $totalPages = ceil($totalTouites / $itemsPerPage);
 
         for ($i = 1; $i <= $totalPages; $i++) {
             $res .= '<a href="?action=Default&page=' . $i . '">' . $i . '</a> ';
         }
 
-// ... (autres parties du code)
 
         return array($data, $touiteID, $contenu, $datePublication, $prenom, $nom, $userId, $res, $note);
     }
@@ -351,17 +321,14 @@ class DefaultAction extends Action
         $imageID = $stmt->fetchColumn();
 
         if (!$imageID) {
-            // Si le touite n'a pas d'image associée, retournez un chemin d'image par défaut
             return 'chemin_image_par_defaut.jpg';
         }
 
-        // Récupérer le chemin de l'image depuis la table image
         $stmt = $db->prepare("SELECT CheminFichier FROM image WHERE ID_Image = ?");
         $stmt->execute([$imageID]);
         $imagePath = $stmt->fetchColumn();
 
         if (!$imagePath) {
-            // Si le chemin de l'image n'est pas trouvé, retournez un chemin d'image par défaut
             return 'chemin_image_par_defaut.jpg';
         }
 

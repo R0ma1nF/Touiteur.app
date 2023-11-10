@@ -14,7 +14,6 @@ class SearchTagAction extends Action
             $db = ConnectionFactory::setConfig('db.config.ini');
             $db = ConnectionFactory::makeConnection();
 
-            // Check if the tag exists before attempting to get the list
             if ($this->tagExists($db, $tag)) {
                 $tagList = new TagAction();
                 $tagList = $tagList->listeTouiteByTag($db, $tag);

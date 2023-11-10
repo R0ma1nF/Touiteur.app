@@ -57,8 +57,6 @@ class TagAction extends Action
             $res .= "vous devez être connecté pour pouvoir suivre un tag";
         } else {
             if (isset($_POST['followTag'])) {
-                //recuperer l'id du tag
-
                 $followResult = tagfollow::followTag($_SESSION['user']['id'], $tag);
                 if (!$followResult) {
                     $res .= '<div>Vous suivez déjà ce tag.</div>';

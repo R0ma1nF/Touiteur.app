@@ -10,12 +10,11 @@ class narcissisticUserAction extends Action
     {
         $db = ConnectionFactory::setConfig('db.config.ini');
         $db = ConnectionFactory::makeConnection();
-        $userID = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0; // Get the userID from the session
+        $userID = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : 0;
 
-        // Première requête pour récupérer la moyenne des notes des touites de l'utilisateur actuel
         $averageScore = $this->getAverageScore($db, $userID);
 
-        // Deuxième requête pour afficher les noms et prénoms des utilisateurs qui le suivent
+
         $followers = $this->getFollowers($db, $userID);
         $identite = $this->getIdentite($db, $userID);
         $details = 'Bienvenue sur Touiter' . '<br>';
@@ -36,7 +35,6 @@ class narcissisticUserAction extends Action
         ");
         $stmt->execute([':userID' => $userID]);
         $data = $stmt->fetch();
-        //recuperer la moyenne des notes des touites de l'utilisateur actuel et l'aroundir à 1 chiffres après la virgule
         $moynenne = round($data['MoyenneScore'], 1);
 
         return $moynenne;

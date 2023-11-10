@@ -13,21 +13,13 @@ class SupprimerTouite
 
         $role = $_SESSION["user"]["role"];
 
-        // Vérifiez le rôle de l'utilisateur
         if ($role == 100 ) {
-            // Supprimer d'abord les références dans listetouitetag
             $stmt = $db->prepare("DELETE FROM listetouitetag WHERE ID_Touite = ?");
             $stmt->execute([$touiteID]);
-
-// Ensuite, supprimer les références dans notetouite
             $stmt = $db->prepare("DELETE FROM notetouite WHERE ID_Touite = ?");
             $stmt->execute([$touiteID]);
-
-// Enfin, supprimer la ligne dans listetouiteutilisateur
             $stmt = $db->prepare("DELETE FROM listetouiteutilisateur WHERE ID_Touite = ?");
             $stmt->execute([$touiteID]);
-
-// Enfin, supprimer la ligne dans touite
             $stmt = $db->prepare("DELETE FROM touite WHERE ID_Touite = ?");
             $stmt->execute([$touiteID]);
 
@@ -43,19 +35,12 @@ class SupprimerTouite
                 $res .= '<a href="index.php?action=Connexion">Retour à la page de connexion</a>';
                 return $res;
             }else {
-                // Supprimer d'abord les références dans listetouitetag
                 $stmt = $db->prepare("DELETE FROM listetouitetag WHERE ID_Touite = ?");
                 $stmt->execute([$touiteID]);
-
-// Ensuite, supprimer les références dans notetouite
                 $stmt = $db->prepare("DELETE FROM notetouite WHERE ID_Touite = ?");
                 $stmt->execute([$touiteID]);
-
-// Enfin, supprimer la ligne dans listetouiteutilisateur
                 $stmt = $db->prepare("DELETE FROM listetouiteutilisateur WHERE ID_Touite = ?");
                 $stmt->execute([$touiteID]);
-
-// Enfin, supprimer la ligne dans touite
                 $stmt = $db->prepare("DELETE FROM touite WHERE ID_Touite = ?");
                 $stmt->execute([$touiteID]);
 

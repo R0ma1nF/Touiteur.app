@@ -55,7 +55,6 @@ class TouiteAction extends Action
             $fileType = mime_content_type($_FILES['image']['tmp_name']);
 
             if (!in_array($fileType, $allowedTypes)) {
-               //raffiche la requete get et un message d'erreur si le type de fichier n'est pas autorisé
                 header('Location: index.php?action=Publier+Touit&error=Le%20type%20de%20fichier%20nest%20pas%20autorisé.%20Veuillez%20choisir%20une%20image%20au%20format%20PNG%20ou%20JPEG.');
             }
 
@@ -72,7 +71,6 @@ class TouiteAction extends Action
         $PublierTouite = new PublierTouite();
         try {
             $PublierTouite->touite($contenu, $imagePath, $db);
-            // Afficher l'image avec le texte du touite
             $imageTag = '';
             if (!empty($imagePath)) {
                 $imageTag = '<img src="' . $imagePath . '" alt="Touite Image">';

@@ -1,5 +1,5 @@
 <?php
-// DisconnectAction.php
+
 namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\action\Action;
