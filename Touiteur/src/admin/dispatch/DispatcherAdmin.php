@@ -21,13 +21,10 @@ class DispatcherAdmin
         // Define actions associated with roles
         $this->actionMappings = [
             '10' => [
-                'Accueil' => DefaultActionBO::class,
                 'Connexion' => SignInActionBO::class,
                 'Déconnexion' => DisconnectActionBO::class,
             ],
             '100' => [
-                'Accueil' => DefaultActionBO::class,
-                'Connexion' => SignInActionBO::class,
                 'Déconnexion' => DisconnectActionBO::class,
                 'Top Influenceurs' => InfluenceurAction::class,
                 'Top Tags' => TopTagsAction::class,
@@ -46,7 +43,7 @@ class DispatcherAdmin
             $pageContent = $actionObject();
         } else {
             // Default action for unknown actions or unauthorized actions
-            $defaultAction = new DefaultActionBO();
+            $defaultAction = new SignInActionBO();
             $pageContent = $defaultAction();
         }
 
