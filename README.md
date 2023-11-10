@@ -10,6 +10,9 @@ Fonctionnalité réalisé : 1 | 5 | 11 | 14 | css
 Vanneste Lucas | luskay595
 Fonctionnalité réalisé : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
 
+Malavasi Valentin | vmalavasi
+Fonctionnalité réalisé : Hospitalisé et n'a pas pu réaliser le projet
+
 Liste des fonctionnalités :
 
 Les fonctionnalités pour tous les utilisateurs :
