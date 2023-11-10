@@ -6,6 +6,7 @@ body, h1, p, form, button {
 
 body {
     font-family: Arial, sans-serif;
+    background: #2079a2;
 }
 
 header {
@@ -29,35 +30,41 @@ button {
     background-color: #000000;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 20px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #181717;
+    background-color: #087dbb;
+    scale: 110%;
+    transition: 0.5s;
 }
 
-.container {
-    display: flex;
-}
-
-.sidebar {
-    width: 20%;
-    background-color: #f5f8fa;
-    padding: 20px;
-}
-
-.tweet-list {
+.touite-list {
     width: 60%;
     margin: 0 auto;
 }
 
 .touite {
-    border: 1px solid #e1e8ed;
+    border: 5px solid #000000;
     padding: 10px;
     margin-bottom: 10px;
+    background: #ffffff;
 }
 
 .touite p {
     margin-bottom: 10px;
 }
+
+a {
+    text-decoration: none;
+    color: #087dbb;
+}
+
+h1 {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+
