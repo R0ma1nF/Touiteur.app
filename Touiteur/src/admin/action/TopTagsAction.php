@@ -28,15 +28,15 @@ class TopTagsAction extends Action
         $topTags = $this->getTopTags($db);
 
         // Construire le résultat HTML
-        $result = '<h2>Top Tags</h2>';
+        $result = '<h1>Top Tags</h1>';
         if (!empty($topTags)) {
-            $result .= '<ul>';
+            $result .= '<div class="adminTag"><ul>';
             foreach ($topTags as $tag) {
                 $result .= '<li>' . $tag['tag'] . ': ' . $tag['count'] . ' fois</li>';
             }
-            $result .= '</ul>';
+            $result .= '</ul></div>';
         } else {
-            $result .= '<p>Aucun tag trouvé.</p>';
+            $result .= '<h1>Aucun tag trouvé.</h1>';
         }
 
         return $result;

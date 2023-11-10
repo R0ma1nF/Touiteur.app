@@ -7,6 +7,7 @@ body, h1, p, form, button {
 body {
     font-family: Arial, sans-serif;
     background: #2079a2;
+
 }
 
 header {
@@ -20,6 +21,12 @@ header {
     display: flex;
     justify-content: space-around;
     margin-top: 10px;
+
+}
+
+.nav-form {
+    display: flex;
+
 }
 
 form {
@@ -32,6 +39,28 @@ button {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+input:not(.search) {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #00acee;
+    color: white;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #007bb5;
 }
 
 button:hover {
@@ -52,11 +81,21 @@ button:hover {
     background: #ffffff;
 }
 
-.touite p {
+.add, .connection, .publier, .detail, .uDetail, .mesAbo, .tag, .touiteTag, .adminCo, .adminInf, .adminTag{
+    background: white;
+    border: 5px solid #000000;
+    padding: 50px;
+    margin: 20px auto;
+    width: 35%;
+    flex-direction: column;
+    text-align: center;
+}
+
+.touite, .add, .connection, .publier, .detail, .uDetail, .mesAbo, .tag, .touiteTag, .adminCo, .adminInf, .adminTag, p {
     margin-bottom: 10px;
 }
 
-a {
+a:not(#admin) {
     text-decoration: none;
     color: #087dbb;
 }
@@ -64,6 +103,18 @@ a {
 h1 {
     margin-top: 20px;
     text-align: center;
+}
+
+img {
+    max-width: 50%;
+    height: auto;
+
+    margin-top: 10px;
+}
+
+#admin {
+    color: white;
+    text-decoration: none;
 }
 
 

@@ -37,7 +37,7 @@ class SignInActionBO extends Action
      */
     public function handleGetRequest(): string
     {
-        return '<form method="POST" >
+        return '<div class="adminCo"><form method="POST" >
     <label for="user_email">Email de l\'administrateur</label>
     <input type="email" name="user_email" required>
     <br>
@@ -45,7 +45,7 @@ class SignInActionBO extends Action
     <input type="password" name="user_passwd" required>
     <br>
     <button type="submit">Se connecter</button>
-</form>';
+</form></div>';
     }
 
     /**
@@ -66,17 +66,18 @@ class SignInActionBO extends Action
 
                 if ($isAuthenticated) {
                     $user = new User();
-                    return 'Authentification réussie.' . '<br>' . 'Bienvenue ' . $userEmail . ' ! ' . '<br>';
+                    return '<div class="adminInf"> Authentification réussie.' . '<br>' . 'Bienvenue ' . $userEmail . ' ! ' . '<br></div>';
                 } else {
-                    $message = 'Authentification échouée. Vérifiez votre email et votre mot de passe. ou vous n\'êtes pas administrateur';
+                    $message = '';
+                    $message .= '<div class="adminInf"> Authentification échouée. Vérifiez votre email et votre mot de passe. ou vous n\'êtes pas administrateur';
                     $message .= '<br>';
-                    $message .= '<a href="admin.php?action=Connexion">Retour à la page de connexion</a>';
+                    $message .= '<a href="admin.php?action=Connexion">Retour à la page de connexion</a></div>';
 
                     return $message;
                 }
             } catch (AuthException $e) {
 
-                return 'Authentification échouée : ' . $e->getMessage();
+                return '<div class="adminInf"> Authentification échouée : ' . $e->getMessage() . '</div>';
             }
         } else {
             return 'Veuillez remplir tous les champs.';

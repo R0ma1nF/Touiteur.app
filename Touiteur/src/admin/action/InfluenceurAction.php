@@ -26,15 +26,16 @@ class InfluenceurAction extends Action
         $influenceurs = $this->getInfluenceurs($db);
 
         // Construire le résultat HTML.
-        $result = '<h2>Top Utilisateurs</h2>';
+
+        $result = '<h1>Top Utilisateur</h1>';
         if (!empty($influenceurs)) {
-            $result .= '<ul>';
-            foreach ($influenceurs as $influenceur) {
-                $result .= '<li>' . $influenceur['nom'] . ' ' . $influenceur['prénom'] . ' ' . $influenceur['email'] . ' suivi par ' . $influenceur['influenceur'] . ' personnes</li>';
+            $result .= '<div class="adminInf"><ul>';
+            foreach ($influenceurs as $i) {
+                $result .= '<li>' . $i['nom'] . ' ' . $i['prénom'] . ' ' . $i['email'] . ' suivi par ' . $i['influenceur'] . ' personnes</li>';
             }
-            $result .= '</ul>';
+            $result .= '</ul></div>';
         } else {
-            $result .= '<p>Aucun utilisateur trouvé.</p>';
+            $result .= '<h1>Aucun utilisateur trouvé.</h1>';
         }
 
         return $result;
