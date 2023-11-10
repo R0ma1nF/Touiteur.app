@@ -1,21 +1,22 @@
 # Touiteur.app
 
-Nom/Prenom     | ID GitHub
-Durand Quentin | QuentinDurand04
+### Nom/Prenom     | ID GitHub
+#### Durand Quentin | QuentinDurand04
+
 Fonctionnalité réalisé : 2 | 4 | 8 | 10 | 16 | 17
 
-Formet Romain  | R0ma1nF
+#### Formet Romain  | R0ma1nF
 Fonctionnalité réalisé : 1 | 5 | 11 | 14 | css
 
-Vanneste Lucas | luskay595
+#### Vanneste Lucas | luskay595
 Fonctionnalité réalisé : 3 | 6 | 7 | 9 | 12 | 13 | 15 | 18 | 19
 
-Malavasi Valentin | vmalavasi
+#### Malavasi Valentin | vmalavasi
 Fonctionnalité réalisé : Hospitalisé et n'a pas pu réaliser le projet
 
-Liste des fonctionnalités :
+# Liste des fonctionnalités :
 
-Les fonctionnalités pour tous les utilisateurs :
+## Les fonctionnalités pour tous les utilisateurs :
 
 1. Afficher la liste touites : Afficher une liste de touites en ordre chronologique inverse
 (les plus récents au début). Les touites sont afficher en version courte.
@@ -35,7 +36,7 @@ la plateforme.
 leur données de connexion (un nom d’utilisateur et un mot de passe).
 
 
-Les fonctionnalités pour les utilisateurs authentifiés :
+## Les fonctionnalités pour les utilisateurs authentifiés :
 
 8. Publier un touite : un utilisateur rédige un touite et le publie sur la plateforme.
 9. Évaluer un touite : un utilisateur peut incrémenter (like) ou réduire (dislike) de 1 la note
@@ -62,7 +63,7 @@ transféré au serveur. L’image sera affichée avec le touite quand celui-ci e
 détail (pas dans une liste).
 
 
-Les fonctionnalités pour les administrateurs :
+## Les fonctionnalités pour les administrateurs :
 
 17. Les influenceurs : afficher une liste des utilisateurs les plus influents, ceux qui sont le
 plus suivit. La liste est ordonnée par ordre croissant de nombre de suiveurs.
@@ -70,3 +71,20 @@ plus suivit. La liste est ordonnée par ordre croissant de nombre de suiveurs.
 où ils sont mentionnés, la liste est ordonnée par ordre croissant.
 19. Le back-office : une application indépendante de touiteur.app qui permet aux
 administrateurs de réaliser les deux fonctionnalités précédentes.
+
+# Données nécessaires pour le fonctionnement de l'application :
+
+## Email | Mot de passe :
+### utilisateur1@gmail.com | utilisateur1
+### utilisateur2@gmail.com | utilisateur2
+### utilisateur3@gmail.com | utilisateur3
+### utilisateur4@gmail.com | utilisateur4
+### utilisateur5@gmail.com | utilisateur5
+### administrateur1@gmail.com | administrateur1
+
+# url de l'application Touiteur :
+https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur/
+
+# url de l'application BackOffice :
+https://webetu.iutnc.univ-lorraine.fr/www/vanneste3u/Touiteur/admin.php
+

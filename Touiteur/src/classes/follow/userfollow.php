@@ -8,7 +8,7 @@ use PDO;
 /**
  * Classe UserFollow gérant les opérations de suivi/désabonnement d'utilisateurs.
  */
-class UserFollow
+class userfollow
 {
     /**
      * Permet à un utilisateur de suivre un autre utilisateur.

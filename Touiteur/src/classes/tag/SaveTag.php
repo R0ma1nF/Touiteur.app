@@ -16,7 +16,7 @@ class SaveTag
     {
         foreach ($tags as $tag) {
             // Vérifier si le tag existe déjà dans la base de données.
-            $query = $db->prepare("SELECT ID_Tag FROM Tag WHERE Libelle = ?");
+            $query = $db->prepare("SELECT ID_Tag FROM tag WHERE Libelle = ?");
             $query->execute([$tag]);
             $result = $query->fetch();
 
@@ -25,13 +25,13 @@ class SaveTag
                 $tagId = $result['ID_Tag'];
             } else {
                 // Si le tag n'existe pas, l'insérer dans la base de données.
-                $query = $db->prepare("INSERT INTO Tag (Libelle) VALUES (?)");
+                $query = $db->prepare("INSERT INTO tag (Libelle) VALUES (?)");
                 $query->execute([$tag]);
                 $tagId = $db->lastInsertId();
             }
 
             // Associer le tag au touite dans la table de liaison.
-            $query = $db->prepare("INSERT INTO listeTouiteTag (ID_Tag, ID_Touite) VALUES (?, ?)");
+            $query = $db->prepare("INSERT INTO listetouitetag (ID_Tag, ID_Touite) VALUES (?, ?)");
             $query->execute([$tagId, $touiteId]);
         }
     }

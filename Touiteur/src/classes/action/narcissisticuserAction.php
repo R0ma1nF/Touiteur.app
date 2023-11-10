@@ -7,7 +7,7 @@ use iutnc\touiteur\db\ConnectionFactory;
 /**
  * Classe représentant l'action pour un utilisateur narcissique sur Touiter.
  */
-class narcissisticUserAction extends Action
+class narcissisticuserAction extends Action
 {
     /**
      * Exécute l'action et retourne les détails pour un utilisateur narcissique.

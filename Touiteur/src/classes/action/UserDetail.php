@@ -5,7 +5,8 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\db\ConnectionFactory;
 use iutnc\touiteur\exception\AuthException;
 use iutnc\touiteur\Touite\NoteTouite;
-use iutnc\touiteur\follow\UserFollow;
+use iutnc\touiteur\follow\userfollow;
+
 use PDO;
 
 /**
