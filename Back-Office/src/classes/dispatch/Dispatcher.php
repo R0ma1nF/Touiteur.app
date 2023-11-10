@@ -9,6 +9,7 @@ use iutnc\BackOffice\action\NarcissisticUserAction;
 use iutnc\BackOffice\action\SearchTagAction;
 use iutnc\BackOffice\action\SignInAction;
 use iutnc\BackOffice\action\TagAction;
+use iutnc\BackOffice\action\TopTagsAction;
 use iutnc\BackOffice\action\TouiteAction;
 use iutnc\BackOffice\action\TouiteDetailsAction;
 use iutnc\BackOffice\action\UserDetail;
@@ -61,6 +62,7 @@ class Dispatcher
                 'tagList' => TagAction::class,
                 'mesabonnés' => narcissisticUserAction::class,
                 'searchTag' => SearchTagAction::class,
+                'Tendance' => TopTagsAction::class,
             ],
         ];
     }

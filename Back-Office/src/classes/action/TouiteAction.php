@@ -1,6 +1,6 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\BackOffice\action;
 
 use iutnc\BackOffice\auth\Auth;
 use iutnc\BackOffice\db\ConnectionFactory;
