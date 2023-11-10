@@ -53,19 +53,24 @@ class TouiteDetailsAction extends Action
         $details .= '<button type="submit" name="followUser">Follow</button>';
         $details .= '<button type="submit" name="unfollowUser">Unfollow</button>';
         $details.='</form>';
-        if (isset($_POST['followUser'])) {
-            $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
-            if (!$followResult) {
-                if ($userId == $_SESSION['user']['id']){
-                    $details.="vous ne pouvez pas vous suivre vous même";
-                }else {
-                    $details .= '<div>Vous suivez déjà cet utilisateur.</div>';
+        $userrole = $_SESSION['user']['role'];
+        if($userrole == '10'){
+            $details.= "vous devez être connecté pour pouvoir suivre un utilisateur";
+        }else {
+            if (isset($_POST['followUser'])) {
+                $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
+                if (!$followResult) {
+                    if ($userId == $_SESSION['user']['id']) {
+                        $details .= "vous ne pouvez pas vous suivre vous même";
+                    } else {
+                        $details .= '<div>Vous suivez déjà cet utilisateur.</div>';
+                    }
                 }
-            }
-        } elseif (isset($_POST['unfollowUser'])) {
-            $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
-            if (!$unfollowResult) {
-                $details.= '<div>Vous ne suivez pas cet utilisateur.</div>';
+            } elseif (isset($_POST['unfollowUser'])) {
+                $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
+                if (!$unfollowResult) {
+                    $details .= '<div>Vous ne suivez pas cet utilisateur.</div>';
+                }
             }
         }
 

@@ -52,19 +52,24 @@ class TagAction extends Action
         $stmtidtag->execute();
         $data = $stmtidtag->fetch();
         $tag = $data['ID_Tag'];
-        if (isset($_POST['followTag'])) {
-            //recuperer l'id du tag
+        $userrole = $_SESSION['user']['role'];
+        if ($userrole == '10') {
+            $res .= "vous devez être connecté pour pouvoir suivre un tag";
+        } else {
+            if (isset($_POST['followTag'])) {
+                //recuperer l'id du tag
 
-            $followResult = tagfollow::followTag($_SESSION['user']['id'], $tag);
-            if (!$followResult) {
-                $res .= '<div>Vous suivez déjà ce tag.</div>';
-            } else {
-                $res .= '<div>Vous suivez maintenant ce tag.</div>';
-            }
-        } elseif (isset($_POST['unfollowTag'])) {
-            $unfollowResult = tagfollow::unfollowTag($_SESSION['user']['id'], $tag);
-            if (!$unfollowResult) {
-                $res .= '<div>Vous ne suivez pas ce tag.</div>';
+                $followResult = tagfollow::followTag($_SESSION['user']['id'], $tag);
+                if (!$followResult) {
+                    $res .= '<div>Vous suivez déjà ce tag.</div>';
+                } else {
+                    $res .= '<div>Vous suivez maintenant ce tag.</div>';
+                }
+            } elseif (isset($_POST['unfollowTag'])) {
+                $unfollowResult = tagfollow::unfollowTag($_SESSION['user']['id'], $tag);
+                if (!$unfollowResult) {
+                    $res .= '<div>Vous ne suivez pas ce tag.</div>';
+                }
             }
         }
         while ($data = $stmt->fetch()) {

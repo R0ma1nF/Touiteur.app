@@ -50,19 +50,24 @@ class UserDetail extends Action
         $res .= '<button type="submit" name="followUser">Follow</button>';
         $res .= '<button type="submit" name="unfollowUser">Unfollow</button>';
         $res.='</form>';
-        if (isset($_POST['followUser'])) {
-            $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
-            if (!$followResult) {
-                if ($userId == $_SESSION['user']['id']){
-                    $res.="vous ne pouvez pas vous suivre vous même";
-                }else {
-                    $res .= '<div>Vous suivez déjà cet utilisateur.</div>';
+        $userrole = $_SESSION['user']['role'];
+        if ($userrole == '10'){
+            $res.= "vous devez être connecté pour pouvoir suivre un utilisateur";
+        }else {
+            if (isset($_POST['followUser'])) {
+                $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
+                if (!$followResult) {
+                    if ($userId == $_SESSION['user']['id']) {
+                        $res .= "vous ne pouvez pas vous suivre vous même";
+                    } else {
+                        $res .= '<div>Vous suivez déjà cet utilisateur.</div>';
+                    }
                 }
-            }
-        } elseif (isset($_POST['unfollowUser'])) {
-            $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
-            if (!$unfollowResult) {
-                $res.= '<div>Vous ne suivez pas cet utilisateur.</div>';
+            } elseif (isset($_POST['unfollowUser'])) {
+                $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
+                if (!$unfollowResult) {
+                    $res .= '<div>Vous ne suivez pas cet utilisateur.</div>';
+                }
             }
         }
         $touites = $stmt->fetchAll(PDO::FETCH_ASSOC);
