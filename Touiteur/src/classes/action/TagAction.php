@@ -96,7 +96,7 @@ class TagAction extends Action
         while ($data = $stmt->fetch()) {
             $SaveTag = new SaveTag();
             $touiteID = $data['id_touite'];
-            $res .= $data['prénom'] . ' ' . $data['nom'];
+            $res .= '<div class="touiteTag">' . $data['prénom'] . ' ' . $data['nom'];
             $contenu = $SaveTag->transformTagsToLinks($data['contenu']);
             $datePublication = $data['datePublication'];
 
