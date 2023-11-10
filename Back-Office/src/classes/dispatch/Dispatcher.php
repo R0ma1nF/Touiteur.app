@@ -5,6 +5,7 @@ namespace iutnc\BackOffice\dispatch;
 use iutnc\BackOffice\action\AddUserAction;
 use iutnc\BackOffice\action\DefaultAction;
 use iutnc\BackOffice\action\DisconnectAction;
+use iutnc\BackOffice\action\InfluenceurAction;
 use iutnc\BackOffice\action\NarcissisticUserAction;
 use iutnc\BackOffice\action\SearchTagAction;
 use iutnc\BackOffice\action\SignInAction;
@@ -63,6 +64,7 @@ class Dispatcher
                 'mesabonnés' => narcissisticUserAction::class,
                 'searchTag' => SearchTagAction::class,
                 'Tendance' => TopTagsAction::class,
+                'Influenceur' => InfluenceurAction::class,
             ],
         ];
     }
