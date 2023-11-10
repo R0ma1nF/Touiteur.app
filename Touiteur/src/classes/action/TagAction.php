@@ -58,12 +58,12 @@ class TagAction extends Action
         $stmt->execute();
 
         $res = '';
-        $res .= '<h1>' . $tag . '</h1>';
+        $res .= '<div class="tag"><h1>' . $tag . '</h1>';
         $res .= '<form method="POST" action="?action=tagList&tag=' . $tag . '">';
         $res .= '<input type="hidden" name="tag" value="' . $tag . '">';
         $res .= '<button type="submit" name="followTag">Follow</button>';
         $res .= '<button type="submit" name="unfollowTag">Unfollow</button>';
-        $res .= '</form>';
+        $res .= '</form></div>';
 
         // Récupère l'ID du tag pour les opérations de suivi et d'arrêt de suivi.
         $stmtidtag = $db->prepare("SELECT ID_Tag FROM tag WHERE Libelle = :tag");
@@ -75,20 +75,19 @@ class TagAction extends Action
 
         // Vérifie le rôle de l'utilisateur pour afficher les actions de suivi de tag.
         if ($userrole == '10') {
-            $res .= "vous devez être connecté pour pouvoir suivre un tag";
+            $res .= '<div class="touiteTag">vous devez être connecté pour pouvoir suivre un tag</div>';
         } else {
-            // Gère les actions de suivi et d'arrêt de suivi du tag.
             if (isset($_POST['followTag'])) {
                 $followResult = tagfollow::followTag($_SESSION['user']['id'], $tag);
                 if (!$followResult) {
-                    $res .= '<div>Vous suivez déjà ce tag.</div>';
+                    $res .= '<div class="tag">Vous suivez déjà ce tag.</div>';
                 } else {
-                    $res .= '<div>Vous suivez maintenant ce tag.</div>';
+                    $res .= '<div class="tag">Vous suivez maintenant ce tag.</div>';
                 }
             } elseif (isset($_POST['unfollowTag'])) {
                 $unfollowResult = tagfollow::unfollowTag($_SESSION['user']['id'], $tag);
                 if (!$unfollowResult) {
-                    $res .= '<div>Vous ne suivez pas ce tag.</div>';
+                    $res .= '<div class="tag">Vous ne suivez pas ce tag.</div>';
                 }
             }
         }
@@ -106,10 +105,10 @@ class TagAction extends Action
             <input type="hidden" name="touiteID" value="' . $touiteID . '">
             <button type="submit" name="likeTouite">Like</button>
             <button type="submit" name="dislikeTouite">Dislike</button>
-            </form>';
+            </form><br><br>';
 
             $note = NoteTouite::getNoteTouite($touiteID);
-            $res .= 'Note: ' . $note . '<br><br>';
+            $res .= 'Note: ' . $note . '</div><br><br>';
         }
         return $res;
     }

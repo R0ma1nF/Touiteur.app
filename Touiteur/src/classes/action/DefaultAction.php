@@ -75,16 +75,16 @@ class DefaultAction extends Action
 
                 // Construction du HTML pour afficher le Touite
                 $res .= '<div class="touite">';
-                $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p></div>';
-                $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
+                $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' . $nom . ' ' . $prenom . '</p>' . '</div>' . '</a>';
+                $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div>' . '</a><br>';
                 $res .= '<form method="POST" action="?action=Default">
                 <input type="hidden" name="touiteID" value="' . $touiteID . '">
                 <button type="submit" name="likeTouite">Like</button>
                 <button type="submit" name="dislikeTouite">Dislike</button>
-                </form></div>';
+                </form><br><br>';
 
                 $note = NoteTouite::getNoteTouite($touiteID);
-                $res .= 'Note: ' . $note . '<br><br>';
+                $res .= 'Note: ' . $note . '</div><br><br>';
             }
 
             // Gestion des actions (like, dislike, suppression) sur les Touites
@@ -274,11 +274,11 @@ private function getTotalTouitesCount($db)
             <button type="submit" name="likeTouite">Like</button>
             <button type="submit" name="dislikeTouite">Dislike</button>
             <button type="submit" name="deleteTouite">Delete</button>
-            </form> ' .'</div></div>';
+            </form> ' . '</div><br>';
 
 
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
-            $res .= 'Note: ' . $note . '<br><br>';
+            $res .= 'Note: ' . $note . '</div><br><br>';
             //verification si il y a un touite grace a l'id
             if (isset($_POST['touiteID'])) {
                 $touiteID = (int)$_POST['touiteID'];

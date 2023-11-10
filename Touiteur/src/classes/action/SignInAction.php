@@ -32,15 +32,15 @@ class SignInAction extends Action
      */
     public function handleGetRequest(): string
     {
-        return '<form method="POST" >
+        return '<div class="connection"><form method="POST" >
     <label for="user_email">Email de l\'utilisateur</label>
     <input type="email" name="user_email" required>
     <br>
     <label for="user_passwd">Mot de passe</label>
     <input type="password" name="user_passwd" required>
     <br>
-    <button type="submit">Se connecter</button>
-</form>';
+    <button class="seCo" type="submit">Se connecter</button>
+</form></div>';
     }
 
     /**

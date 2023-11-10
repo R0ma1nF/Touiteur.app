@@ -40,15 +40,15 @@ class TouiteAction extends Action
         if (!empty($errorMessages)) {
             $res .= '<div style="color: red;">' . htmlspecialchars($errorMessages) . '</div>';
         }
-        $res .= '<form method="POST" enctype="multipart/form-data" >
-            <label for="contenu">Texte du touite</label>
-            <input type="text" name="contenu" required>
-            <br>
-            <label for="image">Image du touite</label>
-            <input type="file" name="image" accept="image/png, image/jpeg" >
-            <br>
-            <button type="submit">Post</button>
-        </form>';
+        $res .= '<div class="publier"><form method="POST" enctype="multipart/form-data" >
+        <label for="contenu">Texte du touite</label>
+        <input type="text" name="contenu" required>
+        <br>
+        <label for="image">Image du touite</label>
+        <input type="file" name="image" accept="image/png, image/jpeg" >
+        <br>
+        <button type="submit">Post</button>
+        </form></div>';
 
         return $res;
     }

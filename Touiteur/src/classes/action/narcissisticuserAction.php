@@ -33,10 +33,10 @@ class narcissisticuserAction extends Action
         $identite = $this->getIdentite($db, $userID);
 
         // Construire les détails à afficher
-        $details = 'Bienvenue sur Touiter' . '<br>';
+        $details = '<div class="mesAbo">' . '<br>';
         $details .= $identite . '<br>';
         $details .= 'Moyenne des Scores de Vos Touites: ' . $averageScore . '<br>';
-        $details .= 'Utilisateurs qui vous suivent: ' . '<br>' . $followers;
+        $details .= 'Utilisateurs qui vous suivent: ' . '<br>'. $followers .'</div>' ;
 
         return $details;
     }

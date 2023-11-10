@@ -72,7 +72,7 @@ class UserDetail extends Action
 
         // Construction de la vue des touites
         $res = '';
-        $res .= '<h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
+        $res.= '<div class="uDetail"><h1>'.$userData['prénom'].' '.$userData['nom'].'</h1>';
         $res .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
         $res.='<input type="hidden" name="userID" value="' . $userId . '">';
         $res .= '<button type="submit" name="followUser">Follow</button>';
@@ -80,21 +80,21 @@ class UserDetail extends Action
         $res.='</form>';
         $userrole = $_SESSION['user']['role'];
         if ($userrole == '10'){
-            $res.= "vous devez être connecté pour pouvoir suivre un utilisateur";
+            $res.= '<div class="uDetail">vous devez être connecté pour pouvoir suivre un utilisateur</div>';
         }else {
             if (isset($_POST['followUser'])) {
                 $followResult = UserFollow::followUser($_SESSION['user']['id'], $userId);
                 if (!$followResult) {
                     if ($userId == $_SESSION['user']['id']) {
-                        $res .= "vous ne pouvez pas vous suivre vous même";
+                        $res .= '<div class="uDetail">vous ne pouvez pas vous suivre vous même</div>';
                     } else {
-                        $res .= '<div>Vous suivez déjà cet utilisateur.</div>';
+                        $res .= '<div class="uDetail">Vous suivez déjà cet utilisateur.</div>';
                     }
                 }
             } elseif (isset($_POST['unfollowUser'])) {
                 $unfollowResult = UserFollow::unfollowUser($_SESSION['user']['id'], $userId);
                 if (!$unfollowResult) {
-                    $res .= '<div>Vous ne suivez pas cet utilisateur.</div>';
+                    $res .= '<div class="uDetail">Vous ne suivez pas cet utilisateur.</div>';
                 }
             }
         }
@@ -114,17 +114,17 @@ class UserDetail extends Action
 
 
 
-
+            $res .= '<div class="touite">';
             $res .= '<div onclick="window.location=\'?action=userDetail&userID=' . $userId . '\';" style="cursor: pointer;"><p>' .'</div>';
             $res .= '<div onclick="window.location=\'?action=testdetail&touiteID=' . $touiteID . '\';" style="cursor: pointer;"><p>' . $contenu . '</p>' . $datePublication . '</div><br>';
             if ($imagePath != 'chemin_image_par_defaut.jpg') {
                 $res .= '<img src="' . $imagePath . '" alt="Touite Image"><br>';
             }
             $res .= '<form method="POST" action="?action=Default">
-        <input type="hidden" name="touiteID" value="' . $touiteID . '">
-        <button type="submit" name="likeTouite">Like</button>
-        <button type="submit" name="dislikeTouite">Dislike</button>
-    </form>';
+                    <input type="hidden" name="touiteID" value="' . $touiteID . '">
+                    <button type="submit" name="likeTouite">Like</button>
+                    <button type="submit" name="dislikeTouite">Dislike</button>
+                    </form><br><br>';
 
 
             if (isset($_POST['touiteID']) && $_POST['touiteID'] == $touiteID) {
@@ -137,7 +137,7 @@ class UserDetail extends Action
 
 
             $note = NoteTouite::getNoteTouite($touiteID) ?? null;
-            $res .= 'Note: ' . $note . '<br><br>';
+            $res .= 'Note: ' . $note . '</div><br><br>';
         }
         $totalPages = ceil($totalTouites / $itemsPerPage);
 

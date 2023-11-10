@@ -55,12 +55,13 @@ class TouiteDetailsAction extends Action
         $data = $stmt->fetch();
 
         // Construire le contenu HTML des détails du Touite
-        $details .= 'Contenu: ' . $data['contenu'] . "<br>";
+        $details .= '<div class="detail">' . ' Contenu: ' . $data['contenu'] . "<br>";
         $details .= 'Date de Publication: ' . $data['datePublication'] . "<br>";
         $details .= 'Nom: ' . $data['nom'] . "<br>";
         $details .= 'Prénom: ' . $data['prénom'] . "<br>";
         $details .= 'ID Touite: ' . $data['id_touite'] . "<br>";
         $details .= 'Note : ' . NoteTouite::getNoteTouite($idTouite);
+        $userId = $data['id_utilisateur'];
 
         // Récupérer l'ID de l'utilisateur associé au Touite
         $userId = $data['id_utilisateur'];
@@ -77,14 +78,11 @@ class TouiteDetailsAction extends Action
 
         // Afficher le nom et prénom de l'utilisateur
         $details.= '<h1>'.$data['prénom'].' '.$data['nom'].'</h1>';
-
-        // Afficher le formulaire pour suivre ou ne pas suivre l'utilisateur
         $details .= '<form method="POST" action="?action=userDetail&userID=' . $userId . '">';
         $details.='<input type="hidden" name="userID" value="' . $userId . '">';
         $details .= '<button type="submit" name="followUser">Follow</button>';
         $details .= '<button type="submit" name="unfollowUser">Unfollow</button>';
-        $details.='</form>';
-
+        $details.='</form></div>';
         // Vérifier le rôle de l'utilisateur et afficher un message approprié
         $userrole = $_SESSION['user']['role'];
         if($userrole == '10'){

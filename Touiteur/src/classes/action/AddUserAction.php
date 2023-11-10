@@ -49,7 +49,8 @@ class AddUserAction extends Action {
      */
     private function getRegistrationForm(): string {
         return <<<HTML
-    <form method="POST" >
+    <div class="add">
+    <form class="register" method="POST" >
         <label for="name">Nom:</label>
         <input type="text" name="name" id="name" required><br>
         <label for="firstname">Prénom:</label>
@@ -60,8 +61,9 @@ class AddUserAction extends Action {
         <input type="password" name="password" id="password" required><br>
         <label for="password_confirm">Confirmez le mot de passe:</label>
         <input type="password" name="password_confirm" id="password_confirm" required><br>
-        <input type="submit" value="S'inscrire">
+        <input class="submit" type="submit" value="S'inscrire">
     </form>
+    </div>
 HTML;
     }
 

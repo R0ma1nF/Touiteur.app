@@ -33,15 +33,15 @@ class SearchTagAction extends Action
 
                 // Vérifie s'il y a des touites associées au tag
                 if ($tagList != '') {
-                    return 'Touites avec le tag ' . $tag . '<br>' . $tagList;
+                    return '<h1>Touites avec le tag ' . $tag . '</h1><br>' . $tagList;
                 } else {
-                    return 'Pas de touites avec le tag ' . $tag;
+                    return '<h1> Pas de touites avec le tag ' . $tag .'</h1>';
                 }
             } else {
-                return 'Le tag ' . $tag . ' n\'existe pas.';
+                return '<h1>Le tag ' . $tag . ' n\'existe pas.' . '</h1>';
             }
         } else {
-            return 'Aucun tag spécifié.';
+            return '<h1> Aucun tag spécifié. </h1>';
         }
     }
 
